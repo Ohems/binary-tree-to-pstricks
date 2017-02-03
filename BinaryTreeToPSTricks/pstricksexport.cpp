@@ -19,7 +19,7 @@ namespace PSTricksExport
         return true;
     }
 
-    bool exportTreeToFile(const BinaryTree &tree, const string &filename)
+    bool exportTreeToFile(const BinaryTree &tree, const string &filename, bool wrapDocument)
     {
         cout << "Tree exporting not yet ready, nothing done and returning true" << endl;
         return true;

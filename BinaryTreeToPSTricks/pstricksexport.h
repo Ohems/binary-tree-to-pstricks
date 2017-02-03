@@ -13,12 +13,13 @@ namespace PSTricksExport
     bool setExportDirectory(const string &path);
 
     /**
-     * @brief Exports the binary tree to a text file in PSTricks format
+     * @brief Exports the binary tree to a .tex file in PSTricks format
      * @param tree Tree to be exported
      * @param filename Name of the file to be created
+     * @param wrapDocument Should output be wrapped in basic LaTeX syntax so that it becomes a valid document
      * @return True if successful
      */
-    bool exportTreeToFile(const BinaryTree &tree, const string &filename);
+    bool exportTreeToFile(const BinaryTree &tree, const string &filename, bool wrapDocument);
 
     /**
      * @brief Converts the binary tree to PSTricks format and prints it to console
