@@ -1,9 +1,19 @@
 #include <iostream>
 
+#include "binarytree.h"
+#include "pstricksexport.h"
+
 using namespace std;
 
-int main(int argc, char *argv[])
+int main()
 {
-    cout << "Hello World!" << endl;
+    string input = "";
+
+    // TODO: read input data
+
+    BinaryTree tree = BinaryTree(input);
+
+    PSTricksExport::exportTreeToConsole(tree);
+
     return 0;
 }
