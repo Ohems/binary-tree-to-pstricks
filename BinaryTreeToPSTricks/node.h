@@ -12,17 +12,23 @@ using namespace std;
 class Node
 {
 public:
-    Node(const string &content) : content(content) {}
+    Node(const string& content) : content(content) {}
 
-    void addChild(const Node &node);
+    string& getContent() { return content; }
+
+    void addChild(Node* node);
+    vector<Node*>& getChildren() { return children; }
+
+    float getX() { return x; }
+    unsigned int getY() { return y; }
 
 private:
     string content;
 
-    float x = 0.0f;
-    unsigned int level = 0; /** Level in which this node is, top level is 0 */
+    float x = 0.0f; /** X position  of center in LaTeX units, check PSTricksExport for tools */
+    unsigned int y = 0; /** Y position in layers, top layer is 0 */
 
-    vector<Node> children;
+    vector<Node*> children;
 };
 
 #endif // NODE_H
