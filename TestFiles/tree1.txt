@@ -1,5 +1,5 @@
 {
-  "content": "and",
+  "content": "or",
   "children": [
     {
       "content": "=",
