@@ -34,7 +34,7 @@ namespace PSTricksExport
 
         void addIndent(stringstream& ss, Node* node)
         {
-            for (int i = 0 ; i < node->getY() ; i++) {
+            for (unsigned int i = 0 ; i <= node->getY() ; i++) {
                 ss << "  ";
             }
         }
@@ -115,13 +115,14 @@ namespace PSTricksExport
     }
 
     bool exportTreeToFile(BinaryTree& tree, const string& filename,
-                          bool indent /*= true*/, bool wrapDocument /*= false*/)
+                          bool indent /*= false*/, bool wrapDocument /*= false*/)
     {
         cout << "Tree exporting not yet ready, nothing done and returning true" << endl;
         return true;
     }
 
-    bool exportTreeToConsole(BinaryTree& tree, bool indent /*= true*/)
+    bool exportTreeToConsole(BinaryTree& tree, bool indent /*= false*/,
+                             bool wrapDocument /*= false*/)
     {
         cout << "Tree exporting not yet ready, expect weird results!" << endl << endl;
 

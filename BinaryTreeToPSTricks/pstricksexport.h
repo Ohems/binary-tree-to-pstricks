@@ -35,15 +35,17 @@ namespace PSTricksExport
      * @return True if successful
      */
     bool exportTreeToFile(BinaryTree& tree, const string& filename,
-                          bool indent = true, bool wrapDocument = false);
+                          bool indent = false, bool wrapDocument = false);
 
     /**
      * @brief Converts the binary tree to PSTricks format and prints it to console
      * @param tree Tree to be exported
      * @param indent Should nodes be indented in the output based on their level
+     * @param wrapDocument Should output be wrapped in basic LaTeX syntax so that it becomes a valid document
      * @return True if successful
      */
-    bool exportTreeToConsole(BinaryTree& tree, bool indent = true);
+    bool exportTreeToConsole(BinaryTree& tree, bool indent = false,
+                             bool wrapDocument = false);
 }
 
 #endif // PSTRICKSEXPORT_H

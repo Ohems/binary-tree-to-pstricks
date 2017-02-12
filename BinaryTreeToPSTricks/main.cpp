@@ -1,19 +1,60 @@
 #include <iostream>
+#include <iomanip>
+#include <string>
+#include <fstream>
 
 #include "binarytree.h"
 #include "pstricksexport.h"
+#include "inputparser.h"
+#include "json.hpp"
 
 using namespace std;
+using json = nlohmann::json;
 
-int main()
+int main(int argc, char* argv[])
 {
-    string input = "";
+    if (argc < 2){
+        cerr << "Usage: " << argv[0] << "-i input [-o output] [-n] [-w]" << endl
+             << left << endl
+             << setw(21) << "\t-i input:"   << "Input file" << endl
+             << setw(21) << "\t-o output:"  << "Output file, write to console if not defined" << endl
+             << setw(21) << "\t-n:"         << "Indent PSTricks output according to tree depth" << endl
+             << setw(21) << "\t-w:"         << "Wrap document with a minimal LaTeX document" << endl;
+        return 0;
+    }
 
-    // TODO: read input data
+    InputParser consoleInput(argc, argv);
 
-    BinaryTree tree = BinaryTree(input);
+    string inputFilePath = consoleInput.getCmdOption("-i");
+    string outputFilePath = consoleInput.getCmdOption("-f");
 
-    PSTricksExport::exportTreeToConsole(tree);
+    bool indent = consoleInput.cmdOptionExists("-n");
+    bool wrap = consoleInput.cmdOptionExists("-w");
+
+    if (inputFilePath.empty()) {
+        cerr << "No input file defined!" << endl;
+        return 0;
+    }
+
+    ifstream fileInput(inputFilePath);
+
+    if (!fileInput.is_open()) {
+        cerr << "Error opening file " << inputFilePath << endl;
+        return 0;
+    }
+
+    json j;
+    fileInput >> j;
+
+    fileInput.close();
+
+    BinaryTree tree(j);
+
+    if (outputFilePath.empty()) {
+       PSTricksExport::exportTreeToConsole(tree, indent, wrap);
+    } else {
+        PSTricksExport::exportTreeToFile(tree, outputFilePath, indent, wrap);
+    }
 
     return 0;
 }

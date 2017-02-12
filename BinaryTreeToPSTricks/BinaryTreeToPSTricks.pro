@@ -11,4 +11,6 @@ SOURCES += main.cpp \
 HEADERS += \
     node.h \
     binarytree.h \
-    pstricksexport.h
+    pstricksexport.h \
+    json.hpp \
+    inputparser.h

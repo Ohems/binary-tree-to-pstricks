@@ -1,19 +1,32 @@
 #include <string>
 
 #include "binarytree.h"
+#include "json.hpp"
 
 using namespace std;
+using json = nlohmann::json;
 
-BinaryTree::BinaryTree(string data)
-{
-    // THIS IS TEST DATA, REPLACE WITH ACTUAL DATA
-    Node* root = new Node("root");
-    root->addChild(new Node("lol"));
-    root->addChild(new Node("wtf"));
+namespace {
+    void buildNode(Node* current, json j)
+    {
+        current->setContent(j["content"].get<string>());
 
-    this->root = root;
+        json children = j["children"];
+
+        for(json::iterator it = children.begin(); it != children.end(); ++it) {
+            Node* child = new Node();
+            current->addChild(child);
+            buildNode(child, *it);
+        }
+    }
 }
 
-BinaryTree::~BinaryTree() {
+BinaryTree::BinaryTree(json j)
+{
+    buildNode(this->root, j);
+}
+
+BinaryTree::~BinaryTree()
+{
     delete root;
 }

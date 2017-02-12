@@ -12,8 +12,9 @@ using namespace std;
 class Node
 {
 public:
-    Node(const string& content) : content(content) {}
+    Node() {}
 
+    void setContent(string& content) { this->content = content; }
     string& getContent() { return content; }
 
     void addChild(Node* node);

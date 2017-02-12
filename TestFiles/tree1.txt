@@ -1,0 +1,127 @@
+{
+  "content": "and",
+  "children": [
+    {
+      "content": "=",
+      "children": [
+        {
+          "content": "x"
+        },
+        {
+          "content": "+",
+          "children": [
+            {
+              "content": "-",
+              "children": [
+                {
+                  "content": "a/b",
+                  "children": [
+                    {
+                      "content": "p"
+                    },
+                    {
+                      "content": "2"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "content": "sqrt",
+              "children": [
+                {
+                  "content": "-",
+                  "children": [
+                    {
+                      "content": "^",
+                      "children": [
+                        {
+                          "content": "a/b",
+                          "children": [
+                            {
+                              "content": "p"
+                            },
+                            {
+                              "content": "2"
+                            }
+                          ]
+                        },
+                        {
+                          "content": "2"
+                        }
+                      ]
+                    },
+                    {
+                      "content": "q"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "=",
+      "children": [
+        {
+          "content": "x"
+        },
+        {
+          "content": "-",
+          "children": [
+            {
+              "content": "-",
+              "children": [
+                {
+                  "content": "a/b",
+                  "children": [
+                    {
+                      "content": "p"
+                    },
+                    {
+                      "content": "2"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "content": "sqrt",
+              "children": [
+                {
+                  "content": "-",
+                  "children": [
+                    {
+                      "content": "^",
+                      "children": [
+                        {
+                          "content": "a/b",
+                          "children": [
+                            {
+                              "content": "p"
+                            },
+                            {
+                              "content": "2"
+                            }
+                          ]
+                        },
+                        {
+                          "content": "2"
+                        }
+                      ]
+                    },
+                    {
+                      "content": "q"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
