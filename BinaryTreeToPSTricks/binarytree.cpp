@@ -9,7 +9,8 @@ using json = nlohmann::json;
 namespace {
     void buildNode(Node* current, json j)
     {
-        current->setContent(j["content"].get<string>());
+        string content = j["content"].get<string>();
+        current->setContent(content);
 
         json children = j["children"];
 

@@ -18,7 +18,7 @@ namespace PSTricksExport
 
         void addHeader(stringstream& ss, BinaryTree& tree)
         {
-            float countY = (float) tree.getLayerCount();
+            float countY = static_cast<float>(tree.getLayerCount());
             float marginsY = tree.getLayerCount() > 1 ? getMargin() * (countY - 1.0f) : 0.0f;
 
             float width = tree.getWidth();
@@ -91,7 +91,7 @@ namespace PSTricksExport
         {
             addNode(ss, node, indent);
 
-            for (int i = 0 ; i < node->getChildren().size() ; ++i) {
+            for (size_t i = 0 ; i < node->getChildren().size() ; ++i) {
                 addConnection(ss, node, node->getChildren()[i], indent);
                 addNodesRecursive(ss, node->getChildren()[i], indent);
             }
@@ -105,7 +105,7 @@ namespace PSTricksExport
 
     float getNodeWidth(Node* node)
     {
-        return 0.5f + 0.2f * (float) node->getContent().length();
+        return 0.5f + 0.2f * static_cast<float>(node->getContent().length());
     }
 
     bool setExportDirectory(const string& path)
