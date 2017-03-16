@@ -19,6 +19,13 @@ namespace PSTricksExport
      */
     float getNodeWidth(Node* node);
 
+    /**
+     * @brief Returns the y position of the bottom left corner of the node
+     *        in LaTeX units
+     * @param tree Context of the node
+     * @param node Node
+     * @return Bottom left corner of the given node in the given tree in LaTeX units
+     */
     float getNodeY(const BinaryTree& tree, Node* node);
 
     /**
