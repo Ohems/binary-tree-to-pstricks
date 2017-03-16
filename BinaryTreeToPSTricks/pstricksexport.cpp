@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include <sstream>
 
@@ -16,7 +17,7 @@ namespace PSTricksExport
 
         string directoryPath = "";
 
-        void addHeader(stringstream& ss, BinaryTree& tree)
+        void addHeader(const BinaryTree& tree, stringstream& ss)
         {
             /*
              *  \newcommand{\treenode}[5]{
@@ -28,11 +29,11 @@ namespace PSTricksExport
              *
              *  \begin{pspicture}(width,height)
              */
-            float countY = static_cast<float>(tree.getLayerCount());
-            float marginsY = tree.getLayerCount() > 1 ? getMargin() * (countY - 1.0f) : 0.0f;
+            float layerCount = static_cast<float>(tree.getLayerCount());
+            float marginsY = layerCount > 0 ? getMargin() * (layerCount - 1.0f) : 0.0f;
 
             float width = tree.getWidth();
-            float height = NODE_HEIGHT * countY + marginsY;
+            float height = NODE_HEIGHT * layerCount + marginsY;
 
             ss << "\\newcommand{\\treenode}[5]{\n"
                    << "\t\\rput(#1,#2){\n"
@@ -55,14 +56,14 @@ namespace PSTricksExport
             }
         }
 
-        void addNode(stringstream& ss, Node* node, bool indent)
+        void addNode(const BinaryTree& tree, stringstream& ss, Node* node, bool indent)
         {
             /*
              *  \treenode{cornerX}{cornerY}{nodeWidth}{textX}{content}
              */
 
             float cornerX = node->getX();
-            float cornerY = getNodeY(node);
+            float cornerY = getNodeY(tree, node);
             float nodeWidth = getNodeWidth(node);
             float textX = nodeWidth / 2.0f;
 
@@ -78,31 +79,31 @@ namespace PSTricksExport
                  << "}\n";
         }
 
-        void addConnection(stringstream& ss, Node* a, Node* b, bool indent)
+        void addConnection(const BinaryTree& tree, stringstream& ss, Node* a, Node* b, bool indent)
         {
             /*
              *  \psline{-}(x1,y1)(x2,y2)
              */
 
             float x1 = a->getX() + getNodeWidth(a) / 2.0f;
-            float y1 = getNodeY(a) + NODE_HEIGHT / 2.0f;
+            float y1 = getNodeY(tree, a) + NODE_HEIGHT / 2.0f;
 
             float x2 = b->getX() + getNodeWidth(b) / 2.0f;
-            float y2 = getNodeY(b) + NODE_HEIGHT / 2.0f;
+            float y2 = getNodeY(tree, b) + NODE_HEIGHT / 2.0f;
 
             if (indent) addIndent(ss, b);
 
             ss << "\\psline{-}(" << x1 << "," << y1 << ")(" << x2 << "," << y2 << ")\n";
         }
 
-        void addNodesRecursive(stringstream& ss, Node* node, bool indent)
+        void addNodesRecursive(const BinaryTree& tree, stringstream& ss, Node* node, bool indent)
         {
             for (size_t i = 0 ; i < node->getChildren().size() ; ++i) {
-                addConnection(ss, node, node->getChildren()[i], indent);
-                addNodesRecursive(ss, node->getChildren()[i], indent);
+                addConnection(tree, ss, node, node->getChildren()[i], indent);
+                addNodesRecursive(tree, ss, node->getChildren()[i], indent);
             }
 
-            addNode(ss, node, indent);
+            addNode(tree, ss, node, indent);
         }
     }
 
@@ -116,9 +117,11 @@ namespace PSTricksExport
         return 0.5f + 0.2f * static_cast<float>(node->getContent().length());
     }
 
-    float getNodeY(Node* node)
+    float getNodeY(const BinaryTree& tree, Node* node)
     {
-        return (node->getDepth() + 1) * NODE_HEIGHT + node->getDepth() * getMargin();
+        float indexFromBottom = tree.getLayerCount() - node->getDepth();
+        return indexFromBottom * NODE_HEIGHT
+                + (indexFromBottom - 1.0f) * getMargin();
     }
 
     bool setExportDirectory(const string& path)
@@ -127,24 +130,24 @@ namespace PSTricksExport
         return true;
     }
 
-    bool exportTreeToFile(BinaryTree& tree, const string& filename,
+    bool exportTreeToFile(const BinaryTree& tree, const string& filename,
                           bool indent /*= false*/, bool wrapDocument /*= false*/)
     {
         cout << "Tree exporting not yet ready, nothing done and returning true" << endl;
         return true;
     }
 
-    bool exportTreeToConsole(BinaryTree& tree, bool indent /*= false*/,
+    bool exportTreeToConsole(const BinaryTree& tree, bool indent /*= false*/,
                              bool wrapDocument /*= false*/)
     {
         cout << "Tree exporting not yet ready, expect weird results!" << endl << endl;
 
         stringstream ss;
 
-        addHeader(ss, tree);
+        addHeader(tree, ss);
 
         if (tree.getRootNode()) {
-            addNodesRecursive(ss, tree.getRootNode(), indent);
+            addNodesRecursive(tree, ss, tree.getRootNode(), indent);
         }
 
         addFooter(ss);

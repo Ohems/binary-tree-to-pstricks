@@ -15,13 +15,13 @@ public:
     Node() {}
 
     void setContent(string& content) { this->content = content; }
-    string& getContent() { return content; }
+    const string& getContent() const { return content; }
 
     void addChild(Node* node);
     vector<Node*>& getChildren() { return children; }
 
-    float getX() { return x; }
-    unsigned int getDepth() { return depth; }
+    float getX() const { return x; }
+    unsigned int getDepth() const { return depth; }
 
 private:
     string content;

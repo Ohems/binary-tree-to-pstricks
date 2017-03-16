@@ -19,7 +19,7 @@ namespace PSTricksExport
      */
     float getNodeWidth(Node* node);
 
-    float getNodeY(Node* node);
+    float getNodeY(const BinaryTree& tree, Node* node);
 
     /**
      * @brief Set the directory path to which new export files are created
@@ -36,7 +36,7 @@ namespace PSTricksExport
      * @param wrapDocument Should output be wrapped in basic LaTeX syntax so that it becomes a valid document
      * @return True if successful
      */
-    bool exportTreeToFile(BinaryTree& tree, const string& filename,
+    bool exportTreeToFile(const BinaryTree& tree, const string& filename,
                           bool indent = false, bool wrapDocument = false);
 
     /**
@@ -46,7 +46,7 @@ namespace PSTricksExport
      * @param wrapDocument Should output be wrapped in basic LaTeX syntax so that it becomes a valid document
      * @return True if successful
      */
-    bool exportTreeToConsole(BinaryTree& tree, bool indent = false,
+    bool exportTreeToConsole(const BinaryTree& tree, bool indent = false,
                              bool wrapDocument = false);
 }
 
