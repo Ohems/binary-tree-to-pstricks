@@ -42,32 +42,26 @@ namespace PSTricksExport
         void addNode(stringstream& ss, Node* node, bool indent)
         {
             /*
-             * \rput(centerX,centerY){
-             *     \rput(nodeX,nodeY){
-             *         \psframe[framearc=1](0,0)(nodeWidth,nodeHeight)
-             *     }
-             *     \rput(textX,textY){content}
+             * \rput(cornerX,cornerY){
+             *     \psframe[framearc=1](0,0)(nodeWidth,nodeHeight)
+             *     \rput[b](textX,textY){content}
              * }
              */
 
-            float centerX = 0;
-            float centerY = 0;
-            float nodeX = 0;
-            float nodeY = 0;
+            float cornerX = node->getX();
+            float cornerY = node->getY();
             float nodeWidth = getNodeWidth(node);
             float nodeHeight = NODE_HEIGHT;
-            float textX = 0;
-            float textY = 0;
+            float textX = nodeWidth / 2.0f;
+            float textY = 0.2f;
 
             string content = node->getContent();
 
             if (indent) addIndent(ss, node);
 
-            ss   << "\\rput(" << centerX << "," << centerY << "){"
-                    << "\\rput(" << nodeX << "," << nodeY << "){"
-                        << "\\psframe[framearc=1](0,0)(" << nodeWidth << "," << nodeHeight << ")"
-                    << "}"
-                    << "\\rput(" << textX << "," << textY << "){" << content << "}"
+            ss   << "\\rput(" << cornerX << "," << cornerY << "){"
+                    << "\\psframe[framearc=1](0,0)(" << nodeWidth << "," << nodeHeight << ")"
+                    << "\\rput[b](" << textX << "," << textY << "){" << content << "}"
                 << "}\n";
         }
 
@@ -77,10 +71,11 @@ namespace PSTricksExport
              * \psline{-}(x1,y1)(x2,y2)
              */
 
-            float x1 = 0;
-            float y1 = 0;
-            float x2 = 0;
-            float y2 = 0;
+            float x1 = a->getX() + getNodeWidth(a) / 2.0f;
+            float y1 = a->getY() + NODE_HEIGHT / 2.0f;
+
+            float x2 = b->getX() + getNodeWidth(b) / 2.0f;
+            float y2 = b->getY() + NODE_HEIGHT / 2.0f;
 
             if (indent) addIndent(ss, b);
 
