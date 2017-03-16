@@ -4,8 +4,6 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 /**
  * @brief Class representing one node in the tree
  */
@@ -14,22 +12,22 @@ class Node
 public:
     Node() {}
 
-    void setContent(string& content) { this->content = content; }
-    const string& getContent() const { return content; }
+    void setContent(std::string& content) { this->content = content; }
+    const std::string& getContent() const { return content; }
 
     void addChild(Node* node);
-    vector<Node*>& getChildren() { return children; }
+    std::vector<Node*>& getChildren() { return children; }
 
     float getX() const { return x; }
     unsigned int getDepth() const { return depth; }
 
 private:
-    string content;
+    std::string content;
 
     float x = 0.0f; /** X position  of center in LaTeX units, check PSTricksExport for tools */
     unsigned int depth = 0; /** Depth in layers, top layer is 0 */
 
-    vector<Node*> children;
+    std::vector<Node*> children;
 };
 
 #endif // NODE_H

@@ -1,12 +1,8 @@
 #ifndef BINARYTREE_H
 #define BINARYTREE_H
 
-#include <string>
-
 #include "node.h"
 #include "json.hpp"
-
-using namespace std;
 
 class BinaryTree
 {

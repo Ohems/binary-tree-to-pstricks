@@ -33,7 +33,7 @@ namespace PSTricksExport
      * @param path Path to the folder
      * @return True if successful
      */
-    bool setExportDirectory(const string& path);
+    bool setExportDirectory(const std::string& path);
 
     /**
      * @brief Exports the binary tree to a .tex file in PSTricks format
@@ -43,7 +43,7 @@ namespace PSTricksExport
      * @param wrapDocument Should output be wrapped in basic LaTeX syntax so that it becomes a valid document
      * @return True if successful
      */
-    bool exportTreeToFile(const BinaryTree& tree, const string& filename,
+    bool exportTreeToFile(const BinaryTree& tree, const std::string& filename,
                           bool indent = false, bool wrapDocument = false);
 
     /**
