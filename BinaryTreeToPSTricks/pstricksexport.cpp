@@ -109,7 +109,7 @@ namespace PSTricksExport
 
     float getMargin()
     {
-        return 0.7f;
+        return 0.3f;
     }
 
     float getNodeWidth(Node* node)
