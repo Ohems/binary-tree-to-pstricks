@@ -17,6 +17,20 @@ namespace PSTricksExport
 
         string directoryPath = "";
 
+        void addDocumentStart(stringstream& ss)
+        {
+            ss  << "\\documentclass{article}\n\n"
+                << "\\usepackage{pstricks}\n\n"
+                << "\\begin{document}\n"
+                << "\\framebox[\\textwidth]{\n\n";
+        }
+
+        void addDocumentEnd(stringstream& ss)
+        {
+            ss  << "\n}\n"
+                << "\\end{document}\n";
+        }
+
         void addHeader(const BinaryTree& tree, stringstream& ss)
         {
             /*
@@ -144,6 +158,8 @@ namespace PSTricksExport
 
         stringstream ss;
 
+        if (wrapDocument) addDocumentStart(ss);
+
         addHeader(tree, ss);
 
         if (tree.getRootNode()) {
@@ -151,6 +167,8 @@ namespace PSTricksExport
         }
 
         addFooter(ss);
+
+        if (wrapDocument) addDocumentEnd(ss);
 
         cout << ss.str() << endl;
         return true;
