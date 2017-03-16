@@ -19,6 +19,8 @@ namespace PSTricksExport
      */
     float getNodeWidth(Node* node);
 
+    float getNodeY(Node* node);
+
     /**
      * @brief Set the directory path to which new export files are created
      * @param path Path to the folder

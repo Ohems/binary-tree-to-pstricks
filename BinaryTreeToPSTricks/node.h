@@ -21,13 +21,13 @@ public:
     vector<Node*>& getChildren() { return children; }
 
     float getX() { return x; }
-    unsigned int getY() { return y; }
+    unsigned int getDepth() { return depth; }
 
 private:
     string content;
 
     float x = 0.0f; /** X position  of center in LaTeX units, check PSTricksExport for tools */
-    unsigned int y = 0; /** Y position in layers, top layer is 0 */
+    unsigned int depth = 0; /** Depth in layers, top layer is 0 */
 
     vector<Node*> children;
 };

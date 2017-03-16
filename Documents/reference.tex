@@ -7,16 +7,19 @@
 
 \begin{document}
 
-\newcommand{\node}[5]{
-\rput(#1,#2){\rput(-0.2,-0.2){\psframe[framearc=1](0,0)(#3,#4)}#5}
+\newcommand{\treenode}[5]{
+    \rput(#1,#2){
+        \psframe[fillstyle=solid,fillcolor=white,framearc=1](0,0)(#3,#4)
+        \rput[b](0.35,0.2){#5}
+    }
 }
 
 \framebox[\textwidth]{
 \begin{pspicture}(10,10)
-\node{5}{5}{0.7}{0.7}{lol}
-\node{5}{3}{0.7}{0.7}{lol}
-\node{8}{3}{0.7}{0.7}{lol}
-\psline{-}(5,3)(5,5)
+\psline{-}(5.3,3.3)(5.3,5.3)
+\treenode{5}{5}{0.7}{0.7}{lol}
+\treenode{5}{3}{0.7}{0.7}{lol}
+\treenode{8}{3}{0.7}{0.7}{lol}
 \end{pspicture}
 }
 

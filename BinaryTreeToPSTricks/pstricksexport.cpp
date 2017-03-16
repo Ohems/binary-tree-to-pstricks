@@ -18,13 +18,29 @@ namespace PSTricksExport
 
         void addHeader(stringstream& ss, BinaryTree& tree)
         {
+            /*
+             *  \newcommand{\treenode}[5]{
+             *      \rput(#1,#2){
+             *          \psframe[fillstyle=solid,fillcolor=white,framearc=1](0,0)(#3,NODE_HEIGHT)
+             *          \rput[b](#4,0.2){#5}
+             *      }
+             *  }
+             *
+             *  \begin{pspicture}(width,height)
+             */
             float countY = static_cast<float>(tree.getLayerCount());
             float marginsY = tree.getLayerCount() > 1 ? getMargin() * (countY - 1.0f) : 0.0f;
 
             float width = tree.getWidth();
             float height = NODE_HEIGHT * countY + marginsY;
 
-            ss << "\\begin{pspicture}(" << width << "," << height << ")\n";
+            ss << "\\newcommand{\\treenode}[5]{\n"
+                   << "\t\\rput(#1,#2){\n"
+                       << "\t\t\\psframe[fillstyle=solid,fillcolor=white,framearc=1](0,0)(#3," << NODE_HEIGHT << ")\n"
+                       << "\t\t\\rput[b](#4,0.2){#5}\n"
+                   << "\t}\n"
+               << "}\n\n"
+               << "\\begin{pspicture}(" << width << "," << height << ")\n";
         }
 
         void addFooter(stringstream& ss)
@@ -34,7 +50,7 @@ namespace PSTricksExport
 
         void addIndent(stringstream& ss, Node* node)
         {
-            for (unsigned int i = 0 ; i <= node->getY() ; i++) {
+            for (unsigned int i = 0 ; i <= node->getDepth() ; i++) {
                 ss << "  ";
             }
         }
@@ -42,40 +58,37 @@ namespace PSTricksExport
         void addNode(stringstream& ss, Node* node, bool indent)
         {
             /*
-             * \rput(cornerX,cornerY){
-             *     \psframe[framearc=1](0,0)(nodeWidth,nodeHeight)
-             *     \rput[b](textX,textY){content}
-             * }
+             *  \treenode{cornerX}{cornerY}{nodeWidth}{textX}{content}
              */
 
             float cornerX = node->getX();
-            float cornerY = node->getY();
+            float cornerY = getNodeY(node);
             float nodeWidth = getNodeWidth(node);
-            float nodeHeight = NODE_HEIGHT;
             float textX = nodeWidth / 2.0f;
-            float textY = 0.2f;
 
             string content = node->getContent();
 
             if (indent) addIndent(ss, node);
 
-            ss   << "\\rput(" << cornerX << "," << cornerY << "){"
-                    << "\\psframe[framearc=1](0,0)(" << nodeWidth << "," << nodeHeight << ")"
-                    << "\\rput[b](" << textX << "," << textY << "){" << content << "}"
-                << "}\n";
+            ss   << "\\treenode{"
+                 << cornerX << "}{" << cornerY << "}{"
+                 << nodeWidth << "}{"
+                 << textX << "}{"
+                 << content
+                 << "}\n";
         }
 
         void addConnection(stringstream& ss, Node* a, Node* b, bool indent)
         {
             /*
-             * \psline{-}(x1,y1)(x2,y2)
+             *  \psline{-}(x1,y1)(x2,y2)
              */
 
             float x1 = a->getX() + getNodeWidth(a) / 2.0f;
-            float y1 = a->getY() + NODE_HEIGHT / 2.0f;
+            float y1 = getNodeY(a) + NODE_HEIGHT / 2.0f;
 
             float x2 = b->getX() + getNodeWidth(b) / 2.0f;
-            float y2 = b->getY() + NODE_HEIGHT / 2.0f;
+            float y2 = getNodeY(b) + NODE_HEIGHT / 2.0f;
 
             if (indent) addIndent(ss, b);
 
@@ -84,12 +97,12 @@ namespace PSTricksExport
 
         void addNodesRecursive(stringstream& ss, Node* node, bool indent)
         {
-            addNode(ss, node, indent);
-
             for (size_t i = 0 ; i < node->getChildren().size() ; ++i) {
                 addConnection(ss, node, node->getChildren()[i], indent);
                 addNodesRecursive(ss, node->getChildren()[i], indent);
             }
+
+            addNode(ss, node, indent);
         }
     }
 
@@ -101,6 +114,11 @@ namespace PSTricksExport
     float getNodeWidth(Node* node)
     {
         return 0.5f + 0.2f * static_cast<float>(node->getContent().length());
+    }
+
+    float getNodeY(Node* node)
+    {
+        return (node->getDepth() + 1) * NODE_HEIGHT + node->getDepth() * getMargin();
     }
 
     bool setExportDirectory(const string& path)

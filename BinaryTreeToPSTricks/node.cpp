@@ -2,7 +2,7 @@
 
 void Node::addChild(Node* node)
 {
-    node->y = getY() + 1;
+    node->depth = getDepth() + 1;
 
     children.push_back(node);
 }
