@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
     InputParser consoleInput(argc, argv);
 
     string inputFilePath = consoleInput.getCmdOption("-i");
-    string outputFilePath = consoleInput.getCmdOption("-f");
+    string outputFilePath = consoleInput.getCmdOption("-o");
 
     bool indent = consoleInput.cmdOptionExists("-n");
     bool wrap = consoleInput.cmdOptionExists("-w");

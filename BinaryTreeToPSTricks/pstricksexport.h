@@ -1,6 +1,8 @@
 #ifndef PSTRICKSEXPORT_H
 #define PSTRICKSEXPORT_H
 
+#include <ostream>
+
 #include "binarytree.h"
 #include "node.h"
 
@@ -55,6 +57,17 @@ namespace PSTricksExport
      */
     bool exportTreeToConsole(const BinaryTree& tree, bool indent = false,
                              bool wrapDocument = false);
+
+    /**
+     * @brief Converts the binary tree to PSTricks format and prints it to the given output
+     * @param tree Tree to be exported
+     * @param out Output to which the result is exported
+     * @param indent Should nodes be indented in the output based on their level
+     * @param wrapDocument Should output be wrapped in basic LaTeX syntax so that it becomes a valid document
+     * @return True if successful
+     */
+    bool exportTreeToOutput(const BinaryTree& tree, std::ostream& out,
+                            bool indent = false, bool wrapDocument = false);
 }
 
 #endif // PSTRICKSEXPORT_H

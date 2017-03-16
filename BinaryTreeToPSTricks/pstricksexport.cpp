@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <iomanip>
 #include <string>
 #include <sstream>
@@ -27,8 +28,9 @@ namespace PSTricksExport
 
         void addDocumentEnd(stringstream& ss)
         {
-            ss  << "\n}\n"
-                << "\\end{document}\n";
+            ss  << "\n\n"
+                << "}\n"
+                << "\\end{document}";
         }
 
         void addHeader(const BinaryTree& tree, stringstream& ss)
@@ -60,7 +62,7 @@ namespace PSTricksExport
 
         void addFooter(stringstream& ss)
         {
-            ss << "\\end{pspicture}\n";
+            ss << "\\end{pspicture}";
         }
 
         void addIndent(stringstream& ss, Node* node)
@@ -133,7 +135,8 @@ namespace PSTricksExport
 
     float getNodeY(const BinaryTree& tree, Node* node)
     {
-        float indexFromBottom = tree.getLayerCount() - node->getDepth();
+        // TODO throw if depth > count
+        float indexFromBottom = static_cast<float>(tree.getLayerCount() - node->getDepth());
         return indexFromBottom * NODE_HEIGHT
                 + (indexFromBottom - 1.0f) * getMargin();
     }
@@ -144,18 +147,38 @@ namespace PSTricksExport
         return true;
     }
 
-    bool exportTreeToFile(const BinaryTree& tree, const string& filename,
-                          bool indent /*= false*/, bool wrapDocument /*= false*/)
+    bool exportTreeToFile(const BinaryTree& tree,
+                          const string& filename,
+                          bool indent /*= false*/,
+                          bool wrapDocument /*= false*/)
     {
-        cout << "Tree exporting not yet ready, nothing done and returning true" << endl;
-        return true;
+        ofstream file;
+        file.open(filename);
+
+        if (!file.is_open()) {
+            cerr << "Unable to open file " << filename;
+            return false;
+        }
+
+        bool success = exportTreeToOutput(tree, file, indent, wrapDocument);
+
+        file.close();
+
+        return success;
     }
 
-    bool exportTreeToConsole(const BinaryTree& tree, bool indent /*= false*/,
+    bool exportTreeToConsole(const BinaryTree& tree,
+                             bool indent /*= false*/,
                              bool wrapDocument /*= false*/)
     {
-        cout << "Tree exporting not yet ready, expect weird results!" << endl << endl;
+        return exportTreeToOutput(tree, cout, indent, wrapDocument);
+    }
 
+    bool exportTreeToOutput(const BinaryTree& tree,
+                            ostream& out,
+                            bool indent /*= false*/,
+                            bool wrapDocument /*= false*/)
+    {
         stringstream ss;
 
         if (wrapDocument) addDocumentStart(ss);
@@ -170,7 +193,7 @@ namespace PSTricksExport
 
         if (wrapDocument) addDocumentEnd(ss);
 
-        cout << ss.str() << endl;
+        out << ss.str() << endl;
         return true;
     }
 }
