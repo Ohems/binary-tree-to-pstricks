@@ -45,10 +45,10 @@ namespace PSTricksExport
              *
              *  \begin{pspicture}(width,height)
              */
-            float layerCount = static_cast<float>(tree.getLayerCount());
+            float layerCount = static_cast<float>(tree.layers());
             float marginsY = layerCount > 0 ? getMargin() * (layerCount - 1.0f) : 0.0f;
 
-            float width = tree.getWidth();
+            float width = tree.width();
             float height = NODE_HEIGHT * layerCount + marginsY;
 
             ss << "\\newcommand{\\treenode}[5]{\n"
@@ -67,7 +67,7 @@ namespace PSTricksExport
 
         void addIndent(stringstream& ss, Node* node)
         {
-            for (unsigned int i = 0 ; i <= node->getDepth() ; i++) {
+            for (unsigned int i = 0 ; i <= node->depth() ; i++) {
                 ss << "  ";
             }
         }
@@ -78,12 +78,12 @@ namespace PSTricksExport
              *  \treenode{cornerX}{cornerY}{nodeWidth}{textX}{content}
              */
 
-            float cornerX = node->getX();
+            float cornerX = node->x();
             float cornerY = getNodeY(tree, node);
             float nodeWidth = getNodeWidth(node);
             float textX = nodeWidth / 2.0f;
 
-            string content = node->getContent();
+            string content = node->content();
 
             if (indent) addIndent(ss, node);
 
@@ -101,10 +101,10 @@ namespace PSTricksExport
              *  \psline{-}(x1,y1)(x2,y2)
              */
 
-            float x1 = a->getX() + getNodeWidth(a) / 2.0f;
+            float x1 = a->x() + getNodeWidth(a) / 2.0f;
             float y1 = getNodeY(tree, a) + NODE_HEIGHT / 2.0f;
 
-            float x2 = b->getX() + getNodeWidth(b) / 2.0f;
+            float x2 = b->x() + getNodeWidth(b) / 2.0f;
             float y2 = getNodeY(tree, b) + NODE_HEIGHT / 2.0f;
 
             if (indent) addIndent(ss, b);
@@ -114,9 +114,9 @@ namespace PSTricksExport
 
         void addNodesRecursive(const BinaryTree& tree, stringstream& ss, Node* node, bool indent)
         {
-            for (size_t i = 0 ; i < node->getChildren().size() ; ++i) {
-                addConnection(tree, ss, node, node->getChildren()[i], indent);
-                addNodesRecursive(tree, ss, node->getChildren()[i], indent);
+            for (size_t i = 0 ; i < node->children().size() ; ++i) {
+                addConnection(tree, ss, node, node->children()[i], indent);
+                addNodesRecursive(tree, ss, node->children()[i], indent);
             }
 
             addNode(tree, ss, node, indent);
@@ -130,13 +130,13 @@ namespace PSTricksExport
 
     float getNodeWidth(Node* node)
     {
-        return 0.5f + 0.2f * static_cast<float>(node->getContent().length());
+        return 0.5f + 0.2f * static_cast<float>(node->content().length());
     }
 
     float getNodeY(const BinaryTree& tree, Node* node)
     {
         // TODO throw if depth > count
-        float indexFromBottom = static_cast<float>(tree.getLayerCount() - node->getDepth());
+        float indexFromBottom = static_cast<float>(tree.layers() - node->depth());
         return indexFromBottom * NODE_HEIGHT
                 + (indexFromBottom - 1.0f) * getMargin();
     }
@@ -185,8 +185,8 @@ namespace PSTricksExport
 
         addHeader(tree, ss);
 
-        if (tree.getRootNode()) {
-            addNodesRecursive(tree, ss, tree.getRootNode(), indent);
+        if (tree.root()) {
+            addNodesRecursive(tree, ss, tree.root(), indent);
         }
 
         addFooter(ss);

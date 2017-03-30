@@ -10,13 +10,13 @@ public:
     BinaryTree(nlohmann::json j);
     ~BinaryTree();
 
-    float getWidth() const { return 10; } // TODO
-    unsigned int getLayerCount() const { return 10; } // TODO
+    float width() const { return 10; } // TODO
+    unsigned int layers() const { return 10; } // TODO
 
-    Node* getRootNode() const { return root; }
+    Node* root() const { return root_; }
 
 private:
-    Node* root = new Node();
+    Node* root_ = new Node();
 };
 
 #endif // BINARYTREE_H
