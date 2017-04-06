@@ -42,8 +42,8 @@ namespace {
             rightMod += right->mod();
             leftMod += left->mod();
 
-            right = right->rightContour();
-            left = left->leftContour();
+            right = right->leftContour();
+            left = left->rightContour();
         }
 
         return error;

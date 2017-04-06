@@ -9,10 +9,10 @@ void Node::addChild(Node* node)
 
 Node* Node::leftContour()
 {
-    return children_.size() > 0 ? children_.front() : thread_;
+    return children_.empty() ? thread_ : children_.front();
 }
 
 Node* Node::rightContour()
 {
-    return children_.size() > 0 ? children_.back() : thread_;
+    return children_.empty() ? thread_ : children_.back();
 }
