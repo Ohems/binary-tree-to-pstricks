@@ -4,8 +4,8 @@
 #include "json.hpp"
 #include "pstricksexport.h"
 
-using PSTricksExport::getNodeWidth;
-using PSTricksExport::getMargin;
+using PSTricksExport::nodeWidth;
+using PSTricksExport::margin;
 
 using namespace std;
 using json = nlohmann::json;
@@ -30,7 +30,7 @@ namespace {
         float error = 0.0f;
 
         while(true) {
-                 float diff = sibling->x() + getNodeWidth(sibling) + getMargin() - current->x();
+                 float diff = sibling->x() + nodeWidth(sibling) + margin() - current->x();
                  if (diff > error) {
                      error = diff;
                  }
@@ -52,18 +52,18 @@ namespace {
         for (Node* child : current->children()) {
             child->x(xOffset);
             placeNodesRecursive(child, current->children());
-            xOffset += getNodeWidth(child) + getMargin();
+            xOffset += nodeWidth(child) + margin();
 
         }
 
         float childWidth = 0.0f;
         for (Node* child : current->children()) {
-            childWidth += getNodeWidth(child);
+            childWidth += nodeWidth(child);
             if (child != current->children().back()) {
-                childWidth += getMargin();
+                childWidth += margin();
             }
         }
-        current->x(current->x() + childWidth / 2.0f - getNodeWidth(current) / 2.0f);
+        current->x(current->x() + childWidth / 2.0f - nodeWidth(current) / 2.0f);
 
         for (Node* sibling : siblings) {
             if (sibling == current) break;
@@ -78,7 +78,7 @@ namespace {
     {
         mod += current->mod();
 
-        current->x(current->x() + getNodeWidth(current) / 2.0f + mod);
+        current->x(current->x() + nodeWidth(current) / 2.0f + mod);
 
         for (Node* child : current->children()) {
                applyModRecursive(child, mod);

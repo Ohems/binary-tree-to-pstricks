@@ -26,10 +26,6 @@ int main(int argc, char* argv[])
     InputParser consoleInput(argc, argv);
 
     string inputFilePath = consoleInput.getCmdOption("-i");
-    string outputFilePath = consoleInput.getCmdOption("-o");
-
-    bool indent = consoleInput.cmdOptionExists("-n");
-    bool wrap = consoleInput.cmdOptionExists("-w");
 
     if (inputFilePath.empty()) {
         cerr << "No input file defined!" << endl;
@@ -50,11 +46,12 @@ int main(int argc, char* argv[])
 
     BinaryTree tree(j);
 
-    if (outputFilePath.empty()) {
-       PSTricksExport::exportTreeToConsole(tree, indent, wrap);
-    } else {
-        PSTricksExport::exportTreeToFile(tree, outputFilePath, indent, wrap);
-    }
+    PSTricksExport::targetFile(consoleInput.getCmdOption("-o"));
+
+    PSTricksExport::indent(consoleInput.cmdOptionExists("-n"));
+    PSTricksExport::wrapDocument(consoleInput.cmdOptionExists("-w"));
+
+    PSTricksExport::exportTree(tree);
 
     return 0;
 }

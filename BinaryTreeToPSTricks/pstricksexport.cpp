@@ -16,7 +16,58 @@ namespace PSTricksExport
     {
         const float NODE_HEIGHT = 0.7f;
 
-        string directoryPath = "";
+        bool indent_ = false;
+        bool wrapDocument_ = false;
+        bool escapeSpecialCharacters_ = true;
+
+        string targetFile_ = "";
+
+        string escapeContent(const string& input) {
+            /*
+             * BEFORE YOU EDIT:
+             * The code below assumes that all characters to be escaped
+             * are exactly one character long. Change the algorithm
+             * if this is not the case.
+             */
+
+            string escapes[] = {
+                "&", "\\&",
+                "%", "\\%",
+                "$", "\\$",
+                "#", "\\#",
+                "_", "\\_",
+                "{", "\\{",
+                "}", "\\}",
+                "~", "\\textasciitilde{}",
+                "^", "\\textasciicircum{}",
+                "\\", "\\textbackslash{}"
+            };
+
+            size_t elements = sizeof(escapes)/sizeof(escapes[0]);
+
+            stringstream ss;
+
+            bool match;
+
+            for(const char& c : input) {
+                match = false;
+
+                for(size_t i = 0 ; i < elements ; i += 2) {
+                    if (c == escapes[i].at(0)) {
+                        ss << escapes[i + 1];
+
+                        match = true;
+                        break;
+                    }
+                }
+
+                if (!match) {
+                    ss << c;
+                }
+            }
+
+            return ss.str();
+        }
 
         void addDocumentStart(stringstream& ss)
         {
@@ -46,7 +97,7 @@ namespace PSTricksExport
              *  \begin{pspicture}(width,height)
              */
             float layerCount = static_cast<float>(tree.layers());
-            float marginsY = layerCount > 0 ? getMargin() * (layerCount - 1.0f) : 0.0f;
+            float marginsY = layerCount > 0 ? margin() * (layerCount - 1.0f) : 0.0f;
 
             float width = tree.width();
             float height = NODE_HEIGHT * layerCount + marginsY;
@@ -72,126 +123,122 @@ namespace PSTricksExport
             }
         }
 
-        void addNode(const BinaryTree& tree, stringstream& ss, Node* node, bool indent)
+        void addNode(const BinaryTree& tree, stringstream& ss, Node* node)
         {
             /*
              *  \treenode{cornerX}{cornerY}{nodeWidth}{textX}{content}
              */
 
             float cornerX = node->x();
-            float cornerY = getNodeY(tree, node);
-            float nodeWidth = getNodeWidth(node);
-            float textX = nodeWidth / 2.0f;
+            float cornerY = nodeY(tree, node);
+            float width = nodeWidth(node);
+            float textX = width / 2.0f;
 
             string content = node->content();
+            if (escapeSpecialCharacters_) content = escapeContent(content);
 
-            if (indent) addIndent(ss, node);
+            if (indent_) addIndent(ss, node);
 
             ss   << "\\treenode{"
                  << cornerX << "}{" << cornerY << "}{"
-                 << nodeWidth << "}{"
+                 << width << "}{"
                  << textX << "}{"
                  << content
                  << "}\n";
         }
 
-        void addConnection(const BinaryTree& tree, stringstream& ss, Node* a, Node* b, bool indent)
+        void addConnection(const BinaryTree& tree, stringstream& ss, Node* a, Node* b)
         {
             /*
              *  \psline{-}(x1,y1)(x2,y2)
              */
 
-            float x1 = a->x() + getNodeWidth(a) / 2.0f;
-            float y1 = getNodeY(tree, a) + NODE_HEIGHT / 2.0f;
+            float x1 = a->x() + nodeWidth(a) / 2.0f;
+            float y1 = nodeY(tree, a) + NODE_HEIGHT / 2.0f;
 
-            float x2 = b->x() + getNodeWidth(b) / 2.0f;
-            float y2 = getNodeY(tree, b) + NODE_HEIGHT / 2.0f;
+            float x2 = b->x() + nodeWidth(b) / 2.0f;
+            float y2 = nodeY(tree, b) + NODE_HEIGHT / 2.0f;
 
-            if (indent) addIndent(ss, b);
+            if (indent_) addIndent(ss, b);
 
             ss << "\\psline{-}(" << x1 << "," << y1 << ")(" << x2 << "," << y2 << ")\n";
         }
 
-        void addNodesRecursive(const BinaryTree& tree, stringstream& ss, Node* node, bool indent)
+        void addNodesRecursive(const BinaryTree& tree, stringstream& ss, Node* node)
         {
             for (size_t i = 0 ; i < node->children().size() ; ++i) {
-                addConnection(tree, ss, node, node->children()[i], indent);
-                addNodesRecursive(tree, ss, node->children()[i], indent);
+                addConnection(tree, ss, node, node->children()[i]);
+                addNodesRecursive(tree, ss, node->children()[i]);
             }
 
-            addNode(tree, ss, node, indent);
+            addNode(tree, ss, node);
         }
     }
 
-    float getMargin()
+    float margin()
     {
         return 0.3f;
     }
 
-    float getNodeWidth(Node* node)
+    float nodeWidth(Node* node)
     {
         return 0.5f + 0.2f * static_cast<float>(node->content().length());
     }
 
-    float getNodeY(const BinaryTree& tree, Node* node)
+    float nodeY(const BinaryTree& tree, Node* node)
     {
         // TODO throw if depth > count
         float indexFromBottom = static_cast<float>(tree.layers() - node->depth());
         return indexFromBottom * NODE_HEIGHT
-                + (indexFromBottom - 1.0f) * getMargin();
+                + (indexFromBottom - 1.0f) * margin();
     }
 
-    bool setExportDirectory(const string& path)
-    {
-        directoryPath = path;
-        return true;
-    }
+    void indent(bool value) { indent_ = value; }
 
-    bool exportTreeToFile(const BinaryTree& tree,
-                          const string& filename,
-                          bool indent /*= false*/,
-                          bool wrapDocument /*= false*/)
+    void wrapDocument(bool value) { wrapDocument_ = value; }
+
+    void escapeSpecialCharacters(bool value) { escapeSpecialCharacters_ = value; }
+
+    void targetFile(std::string value) { targetFile_ = value; }
+
+    bool exportTree(const BinaryTree& tree)
     {
+        if (targetFile_.empty()) {
+            return exportTreeToOutput(tree, cout);
+        }
+
         ofstream file;
-        file.open(filename);
+        file.open(targetFile_);
 
         if (!file.is_open()) {
-            cerr << "Unable to open file " << filename;
+            cerr << "Unable to open file " << targetFile_;
             return false;
         }
 
-        bool success = exportTreeToOutput(tree, file, indent, wrapDocument);
+        bool success = exportTreeToOutput(tree, file);
 
         file.close();
 
         return success;
     }
 
-    bool exportTreeToConsole(const BinaryTree& tree,
-                             bool indent /*= false*/,
-                             bool wrapDocument /*= false*/)
-    {
-        return exportTreeToOutput(tree, cout, indent, wrapDocument);
-    }
-
-    bool exportTreeToOutput(const BinaryTree& tree,
-                            ostream& out,
-                            bool indent /*= false*/,
-                            bool wrapDocument /*= false*/)
+    bool exportTreeToOutput(const BinaryTree& tree, ostream& out)
     {
         stringstream ss;
 
-        if (wrapDocument) addDocumentStart(ss);
+        ss << '\n';
+
+        if (wrapDocument_) addDocumentStart(ss);
 
         addHeader(tree, ss);
 
         if (tree.root()) {
-            addNodesRecursive(tree, ss, tree.root(), indent);
+            addNodesRecursive(tree, ss, tree.root());
         }
 
         addFooter(ss);
 
-        if (wrapDocument) addDocumentEnd(ss);
+        if (wrapDocument_) addDocumentEnd(ss);
 
         out << ss.str() << endl;
         return true;

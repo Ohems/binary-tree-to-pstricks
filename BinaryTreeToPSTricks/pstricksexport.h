@@ -6,20 +6,30 @@
 #include "binarytree.h"
 #include "node.h"
 
+/**
+ * State machine that converts binary trees to PSTricks format
+ *
+ * States:
+ *      bool indent
+ *      bool wrapDocument
+ *      bool escapeSpecialCharacters
+ *
+ *      string filename
+ */
 namespace PSTricksExport
 {
     /**
      * @brief Gives the minimum margin that should be between two nodes
      * @return Margin as float in default LaTeX units
      */
-    float getMargin();
+    float margin();
 
     /**
      * @brief Calculates the width this node will require considering its content
      * @param node The node for which the size is calculated
      * @return Size as float in default LaTeX units
      */
-    float getNodeWidth(Node* node);
+    float nodeWidth(Node* node);
 
     /**
      * @brief Returns the y position of the bottom left corner of the node
@@ -28,46 +38,49 @@ namespace PSTricksExport
      * @param node Node
      * @return Bottom left corner of the given node in the given tree in LaTeX units
      */
-    float getNodeY(const BinaryTree& tree, Node* node);
+    float nodeY(const BinaryTree& tree, Node* node);
 
     /**
-     * @brief Set the directory path to which new export files are created
-     * @param path Path to the folder
-     * @return True if successful
+     * @brief Define if the output should be indented to depth
+     * @param value New value
      */
-    bool setExportDirectory(const std::string& path);
+    void indent(bool value);
 
     /**
-     * @brief Exports the binary tree to a .tex file in PSTricks format
+     * @brief Define if the output should be wrapped with a basic LaTeX document
+     * @param value New value
+     */
+    void wrapDocument(bool value);
+
+    /**
+     * @brief Define if special characters should be escaped
+     * @param value New value
+     */
+    void escapeSpecialCharacters(bool value);
+
+    /**
+     * @brief Define the file to which the tree is exported
+     * @param value Either local file or full path
+     */
+    void targetFile(std::string value);
+
+    /**
+     * @brief Converts the binary tree to PSTricks format and prints it according to the
+     *        state of the exporter.
      * @param tree Tree to be exported
-     * @param filename Name of the file to be created
-     * @param indent Should nodes be indented in the output based on their level
-     * @param wrapDocument Should output be wrapped in basic LaTeX syntax so that it becomes a valid document
      * @return True if successful
      */
-    bool exportTreeToFile(const BinaryTree& tree, const std::string& filename,
-                          bool indent = false, bool wrapDocument = false);
+    bool exportTree(const BinaryTree& tree);
 
     /**
-     * @brief Converts the binary tree to PSTricks format and prints it to console
-     * @param tree Tree to be exported
-     * @param indent Should nodes be indented in the output based on their level
-     * @param wrapDocument Should output be wrapped in basic LaTeX syntax so that it becomes a valid document
-     * @return True if successful
-     */
-    bool exportTreeToConsole(const BinaryTree& tree, bool indent = false,
-                             bool wrapDocument = false);
-
-    /**
-     * @brief Converts the binary tree to PSTricks format and prints it to the given output
+     * @brief Converts the binary tree to PSTricks format and prints it to the given output.
+     *        Output format is defined by the state of the exporter.
      * @param tree Tree to be exported
      * @param out Output to which the result is exported
-     * @param indent Should nodes be indented in the output based on their level
-     * @param wrapDocument Should output be wrapped in basic LaTeX syntax so that it becomes a valid document
      * @return True if successful
+     * @warning Doesn't close output stream
      */
-    bool exportTreeToOutput(const BinaryTree& tree, std::ostream& out,
-                            bool indent = false, bool wrapDocument = false);
+    bool exportTreeToOutput(const BinaryTree& tree, std::ostream& out);
 }
 
 #endif // PSTRICKSEXPORT_H
