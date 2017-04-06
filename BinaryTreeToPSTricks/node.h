@@ -19,10 +19,12 @@ public:
     std::vector<Node*>& children() { return children_; }
 
     float x() const { return x_; }
-    float x(float x) { return x_ = x; }
+    float& x() { return x_; }
 
     float mod() const { return mod_; }
-    float mod(float mod) { return mod_ = mod; }
+    float& mod() { return mod_; }
+
+    float locX() { return x_ + mod_; }
 
     unsigned int depth() const { return depth_; }
 

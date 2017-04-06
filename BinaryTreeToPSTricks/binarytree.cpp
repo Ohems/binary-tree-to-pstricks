@@ -25,22 +25,31 @@ namespace {
         }       
     }
 
-    float findGreatestErrorInContour(Node* current, Node* sibling)
+    float findGreatestErrorInContour(Node* right, Node* left)
     {
         float error = 0.0f;
 
+        float rightMod = 0.0f;
+        float leftMod = 0.0f;
+
         while(true) {
-                 float diff = sibling->x() + nodeWidth(sibling) + margin() - current->x();
-                 if (diff > error) {
-                     error = diff;
-                 }
+            rightMod += right->mod();
+            leftMod += left->mod();
 
-                 if (current->children().size() == 0 || sibling->children().size() == 0) {
-                     break;
-                 }
+            float diff =
+                    left->x() + leftMod + nodeWidth(left) + margin()
+                    - (right->x() + rightMod);
 
-                 current = current->children().front();
-                 sibling = sibling->children().back();
+            if (diff > error) {
+                error = diff;
+            }
+
+            if (right->children().size() == 0 || left->children().size() == 0) {
+                break;
+            }
+
+            right = right->children().front();
+            left = left->children().back();
         }
 
         return error;
@@ -48,27 +57,23 @@ namespace {
 
     void placeNodesRecursive(Node* current, const vector<Node*>& siblings)
     {
-        float xOffset = current->x();
+        // Process children first
         for (Node* child : current->children()) {
-            child->x(xOffset);
             placeNodesRecursive(child, current->children());
-            xOffset += nodeWidth(child) + margin();
-
         }
 
-        float childWidth = 0.0f;
-        for (Node* child : current->children()) {
-            childWidth += nodeWidth(child);
-            if (child != current->children().back()) {
-                childWidth += margin();
-            }
+        // Center based on children
+        if (!current->children().empty()) {
+            Node* firstChild = current->children().front();
+            Node* lastChild = current->children().back();
+            float childrenWidth = lastChild->locX() + nodeWidth(lastChild) - firstChild->locX();
+            current->x() += firstChild->locX() + childrenWidth / 2.0f - nodeWidth(current) / 2.0f;
         }
-        current->x(current->x() + childWidth / 2.0f - nodeWidth(current) / 2.0f);
 
+        // Apply mod based on contour
         for (Node* sibling : siblings) {
             if (sibling == current) break;
-
-            current->mod(findGreatestErrorInContour(current, sibling));
+            current->mod() += findGreatestErrorInContour(current, sibling);
         }
 
     }
@@ -77,10 +82,11 @@ namespace {
     {
         mod += current->mod();
 
-        current->x(current->x() + mod);
+        current->x() += mod;
+        current->mod() = 0;
 
         for (Node* child : current->children()) {
-               applyModRecursive(child, mod);
+            applyModRecursive(child, mod);
         }
     }
 }
