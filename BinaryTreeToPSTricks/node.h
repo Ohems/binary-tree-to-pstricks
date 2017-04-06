@@ -28,6 +28,9 @@ public:
 
     unsigned int depth() const { return depth_; }
 
+    Node* thread() const { return thread_; }
+    void thread(Node* thread) { thread_ = thread; }
+
 private:
     std::string content_;
 
@@ -36,6 +39,8 @@ private:
     unsigned int depth_ = 0; /** Depth in layers, top layer is 0 */
 
     std::vector<Node*> children_;
+
+    Node* thread_ = nullptr;
 };
 
 #endif // NODE_H

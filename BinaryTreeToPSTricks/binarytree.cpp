@@ -32,42 +32,61 @@ namespace {
         float rightMod = 0.0f;
         float leftMod = 0.0f;
 
-        while(true) {
-            rightMod += right->mod();
-            leftMod += left->mod();
-
-            float diff =
-                    left->x() + leftMod + nodeWidth(left) + margin()
-                    - (right->x() + rightMod);
+        while(right && left) {
+            float diff = left->locX() + nodeWidth(left) + margin() - right->locX();
 
             if (diff > error) {
                 error = diff;
             }
 
-            if (right->children().size() == 0 || left->children().size() == 0) {
-                break;
-            }
+            rightMod += right->mod();
+            leftMod += left->mod();
 
-            right = right->children().front();
-            left = left->children().back();
+            right = right->children().size() > 0 ?
+                        right->children().front() :
+                        right->thread();
+
+            left = left->children().size() > 0 ?
+                        left->children().back() :
+                        left->thread();
         }
 
         return error;
     }
 
-    void placeNodesRecursive(Node* current, const vector<Node*>& siblings)
+    void placeNodesRecursive(Node* current,
+                             const vector<Node*>& siblings = vector<Node*>())
     {
-        // Process children first
-        for (Node* child : current->children()) {
-            placeNodesRecursive(child, current->children());
-        }
-
-        // Center based on children
         if (!current->children().empty()) {
+            // Process children first
+            for (Node* child : current->children()) {
+                placeNodesRecursive(child, current->children());
+            }
+
+            // Center based on children
             Node* firstChild = current->children().front();
             Node* lastChild = current->children().back();
             float childrenWidth = lastChild->locX() + nodeWidth(lastChild) - firstChild->locX();
             current->x() += firstChild->locX() + childrenWidth / 2.0f - nodeWidth(current) / 2.0f;
+        } else {
+            // This is the last child, find threads for it
+            if (current == siblings.front()) {
+                // Find thread to right
+                for (size_t i = 1 ; i < siblings.size() ; ++i) {
+                    if (!siblings[i]->children().empty()) {
+                        current->thread(siblings[i]->children().front());
+                        break;
+                    }
+                }
+            } else if (current == siblings.back()) {
+                // Find thread to left
+                for (size_t i = 1 ; i < siblings.size() ; ++i) {
+                    if (!siblings[i]->children().empty()) {
+                        current->thread(siblings[siblings.size() - i]->children().back());
+                        break;
+                    }
+                }
+            }
         }
 
         // Apply mod based on contour
@@ -95,7 +114,7 @@ BinaryTree::BinaryTree(json j)
 {
     buildNodesRecursive(root_, j);
 
-    placeNodesRecursive(root_, root_->children());
+    placeNodesRecursive(root_);
     applyModRecursive(root_);
 }
 
