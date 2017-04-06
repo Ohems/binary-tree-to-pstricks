@@ -147,8 +147,12 @@ namespace PSTricksExport
                  << "}\n";
         }
 
-        void addConnection(const BinaryTree& tree, stringstream& ss, Node* a, Node* b)
-        {
+        void addConnection(
+                const BinaryTree& tree,
+                stringstream& ss,
+                Node* a, Node* b,
+                bool dashed = false
+        ) {
             /*
              *  \psline{-}(x1,y1)(x2,y2)
              */
@@ -161,14 +165,25 @@ namespace PSTricksExport
 
             if (indent_) addIndent(ss, b);
 
-            ss << "\\psline{-}(" << x1 << "," << y1 << ")(" << x2 << "," << y2 << ")\n";
+            ss << "\\psline";
+
+            if (dashed) {
+                ss << "[linestyle=dashed,dash=3pt 3pt]";
+            }
+
+            ss << "{-}(" << x1 << "," << y1
+               << ")(" << x2 << "," << y2 << ")\n";
         }
 
         void addNodesRecursive(const BinaryTree& tree, stringstream& ss, Node* node)
         {
-            for (size_t i = 0 ; i < node->children().size() ; ++i) {
-                addConnection(tree, ss, node, node->children()[i]);
-                addNodesRecursive(tree, ss, node->children()[i]);
+            if (node->thread()) {
+                addConnection(tree, ss, node, node->thread(), true);
+            }
+
+            for (Node* child : node->children()) {
+                addConnection(tree, ss, node, child);
+                addNodesRecursive(tree, ss, child);
             }
 
             addNode(tree, ss, node);

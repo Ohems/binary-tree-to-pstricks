@@ -32,7 +32,7 @@ namespace {
         float rightMod = 0.0f;
         float leftMod = 0.0f;
 
-        while(right && left) {
+        while(right && left && right != left) {
             float diff = left->locX() + nodeWidth(left) + margin() - right->locX();
 
             if (diff > error) {
@@ -42,13 +42,8 @@ namespace {
             rightMod += right->mod();
             leftMod += left->mod();
 
-            right = right->children().size() > 0 ?
-                        right->children().front() :
-                        right->thread();
-
-            left = left->children().size() > 0 ?
-                        left->children().back() :
-                        left->thread();
+            right = right->rightContour();
+            left = left->leftContour();
         }
 
         return error;
@@ -82,7 +77,7 @@ namespace {
                 // Find thread to left
                 for (size_t i = 1 ; i < siblings.size() ; ++i) {
                     if (!siblings[i]->children().empty()) {
-                        current->thread(siblings[siblings.size() - i]->children().back());
+                        current->thread(siblings[siblings.size() - i - 1]->children().back());
                         break;
                     }
                 }
@@ -94,7 +89,6 @@ namespace {
             if (sibling == current) break;
             current->mod() += findGreatestErrorInContour(current, sibling);
         }
-
     }
 
     void applyModRecursive(Node* current, float mod = 0.0f)

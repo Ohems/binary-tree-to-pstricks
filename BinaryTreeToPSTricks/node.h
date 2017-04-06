@@ -28,8 +28,10 @@ public:
 
     unsigned int depth() const { return depth_; }
 
-    Node* thread() const { return thread_; }
     void thread(Node* thread) { thread_ = thread; }
+
+    Node* leftContour();
+    Node* rightContour();
 
 private:
     std::string content_;
