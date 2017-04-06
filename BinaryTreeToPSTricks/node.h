@@ -29,7 +29,7 @@ public:
 private:
     std::string content_;
 
-    float x_ = 0.0f; /** X position  of center in LaTeX units, check PSTricksExport for tools */
+    float x_ = 0.0f; /** X position of left edge in LaTeX units, check PSTricksExport for tools */
     float mod_ = 0.0f;
     unsigned int depth_ = 0; /** Depth in layers, top layer is 0 */
 

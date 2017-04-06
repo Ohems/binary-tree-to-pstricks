@@ -73,20 +73,16 @@ namespace {
 
     }
 
-
     void applyModRecursive(Node* current, float mod = 0.0f)
     {
         mod += current->mod();
 
-        current->x(current->x() + nodeWidth(current) / 2.0f + mod);
+        current->x(current->x() + mod);
 
         for (Node* child : current->children()) {
                applyModRecursive(child, mod);
         }
     }
-
-
-
 }
 
 BinaryTree::BinaryTree(json j)
