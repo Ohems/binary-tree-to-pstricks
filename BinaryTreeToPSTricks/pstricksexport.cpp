@@ -22,6 +22,13 @@ namespace PSTricksExport
 
         string targetFile_ = "";
 
+        float treeHeight(const BinaryTree& tree) {
+            float layerCount = static_cast<float>(tree.layers());
+            float marginsY = layerCount > 0 ? margin() * (layerCount - 1.0f) : 0.0f;
+
+            return NODE_HEIGHT * layerCount + marginsY;
+        }
+
         string escapeContent(const string& input) {
             /*
              * BEFORE YOU EDIT:
@@ -74,7 +81,7 @@ namespace PSTricksExport
             ss  << "\\documentclass{article}\n\n"
                 << "\\usepackage{pstricks}\n\n"
                 << "\\begin{document}\n"
-                << "\\framebox[\\textwidth]{\n\n";
+                << "\\framebox{\n\n";
         }
 
         void addDocumentEnd(stringstream& ss)
@@ -96,11 +103,9 @@ namespace PSTricksExport
              *
              *  \begin{pspicture}(width,height)
              */
-            float layerCount = static_cast<float>(tree.layers());
-            float marginsY = layerCount > 0 ? margin() * (layerCount - 1.0f) : 0.0f;
 
             float width = tree.width();
-            float height = NODE_HEIGHT * layerCount + marginsY;
+            float height = treeHeight(tree);
 
             ss << "\\newcommand{\\treenode}[5]{\n"
                    << "\t\\rput(#1,#2){\n"
@@ -203,9 +208,9 @@ namespace PSTricksExport
     float nodeY(const BinaryTree& tree, Node* node)
     {
         // TODO throw if depth > count
-        float indexFromBottom = static_cast<float>(tree.layers() - node->depth());
+        float indexFromBottom = static_cast<float>(tree.layers() - node->depth() - 1);
         return indexFromBottom * NODE_HEIGHT
-                + (indexFromBottom - 1.0f) * margin();
+                + indexFromBottom * margin();
     }
 
     void indent(bool value) { indent_ = value; }

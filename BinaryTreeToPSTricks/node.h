@@ -34,7 +34,7 @@ public:
     Node* leftContour();
     Node* rightContour();
 
-private:
+//private:
     std::string content_;
 
     float x_ = 0.0f; /** X position of left edge in LaTeX units, check PSTricksExport for tools */
