@@ -37,33 +37,36 @@ namespace {
         Node* left = originalLeft;
 
         while(right && left && right != left) {
-            float diff = left->locX() + nodeWidth(left) + margin() - right->locX();
+            rightMod += right->mod();
+            leftMod += left->mod();
+
+            float diff = left->x() + leftMod + nodeWidth(left) + margin()
+                    - (right->x() + rightMod);
 
             if (diff > error) {
                 error = diff;
             }
 
-            rightMod += right->mod();
-            leftMod += left->mod();
-
-            float leftThreadMod;
             float rightThreadMod;
+            float leftThreadMod;
 
             right = right->leftContour(&rightThreadMod);
             left = left->rightContour(&leftThreadMod);
 
-            leftMod -= leftThreadMod;
             rightMod += rightThreadMod;
+            leftMod += leftThreadMod;
 
             if (!right && left) {
-                Node* rightLast = originalRight->rightLast();
-                diff = left->locX() + nodeWidth(left) + margin() - rightLast->locX();
-                originalRight->rightLast()->thread(left, diff);
+                originalRight->rightLast()->thread(
+                            left,
+                            leftMod - (rightMod + error)
+                );
             }
             if (!left && right) {
-                Node* leftLast = originalLeft->leftLast();
-                diff = right->locX() + nodeWidth(right) + margin() - leftLast->locX();
-                originalLeft->leftLast()->thread(right, diff);
+                originalLeft->leftLast()->thread(
+                            right,
+                            (rightMod + error) - leftMod
+                );
             }
         }
 
