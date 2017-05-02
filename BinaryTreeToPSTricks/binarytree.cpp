@@ -78,8 +78,8 @@ void BinaryTree::placeNodesRecursive(
         current->x() += firstChild->locX() + childrenWidth / 2.0f - nodeWidth(current) / 2.0f;
 
         // Parents lastLeft and lastRight are same as their left and right children
-        current->addRightLast(current->children().back());
-        current->addLeftLast(current->children().front());
+        current->addRightLast(current->children().back()->rightLast());
+        current->addLeftLast(current->children().front()->leftLast());
     }
 
     // Apply mod based on contour
