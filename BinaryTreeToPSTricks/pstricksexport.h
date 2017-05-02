@@ -53,6 +53,12 @@ namespace PSTricksExport
     void wrapDocument(bool value);
 
     /**
+     * @brief Define if threads should be shown, only enable this for debugging purposes
+     * @param value New value
+     */
+    void showThreads(bool value);
+
+    /**
      * @brief Define if special characters should be escaped
      * @param value New value
      */

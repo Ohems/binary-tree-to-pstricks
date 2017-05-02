@@ -18,6 +18,7 @@ namespace PSTricksExport
 
         bool indent_ = false;
         bool wrapDocument_ = false;
+        bool showThreads_ = false;
         bool escapeSpecialCharacters_ = true;
 
         string targetFile_ = "";
@@ -182,7 +183,7 @@ namespace PSTricksExport
 
         void addNodesRecursive(const BinaryTree& tree, stringstream& ss, Node* node)
         {
-            if (node->thread()) {
+            if (node->thread() && showThreads_) {
                 addConnection(tree, ss, node, node->thread(), true);
             }
 
@@ -216,6 +217,8 @@ namespace PSTricksExport
     void indent(bool value) { indent_ = value; }
 
     void wrapDocument(bool value) { wrapDocument_ = value; }
+
+    void showThreads(bool value) { showThreads_ = value; }
 
     void escapeSpecialCharacters(bool value) { escapeSpecialCharacters_ = value; }
 

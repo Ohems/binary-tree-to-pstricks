@@ -19,7 +19,8 @@ int main(int argc, char* argv[])
              << setw(21) << "\t-i input:"   << "Input file" << endl
              << setw(21) << "\t-o output:"  << "Output file, write to console if not defined" << endl
              << setw(21) << "\t-n:"         << "Indent PSTricks output according to tree depth" << endl
-             << setw(21) << "\t-w:"         << "Wrap document with a minimal LaTeX document" << endl;
+             << setw(21) << "\t-w:"         << "Wrap document with a minimal LaTeX document" << endl
+             << setw(21) << "\t-t:"         << "Show threads (for debugging purposes)" << endl;
         return 0;
     }
 
@@ -50,6 +51,7 @@ int main(int argc, char* argv[])
 
     PSTricksExport::indent(consoleInput.cmdOptionExists("-n"));
     PSTricksExport::wrapDocument(consoleInput.cmdOptionExists("-w"));
+    PSTricksExport::showThreads(consoleInput.cmdOptionExists("-t"));
 
     PSTricksExport::exportTree(tree);
 
