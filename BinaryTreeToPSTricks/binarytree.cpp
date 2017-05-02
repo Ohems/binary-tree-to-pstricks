@@ -42,8 +42,7 @@ namespace {
             leftMod += left->mod();
 
             // Calculate the overlay of the current nodes
-            float overlay = left->x() + leftMod + nodeWidth(left) + margin()
-                    - (right->x() + rightMod);
+            float overlay = leftMod + nodeWidth(left) + margin() - rightMod;
 
             // If overlay is greater than the largest current error, replace
             if (overlay > error) {
@@ -95,11 +94,16 @@ void BinaryTree::placeNodesRecursive(
             placeNodesRecursive(child, current->children());
         }
 
-        // Center based on children
+        // Check children total width
         Node* firstChild = current->children().front();
         Node* lastChild = current->children().back();
         float childrenWidth = lastChild->locX() + nodeWidth(lastChild) - firstChild->locX();
-        current->x() += firstChild->locX() + childrenWidth / 2.0f - nodeWidth(current) / 2.0f;
+
+        // Center children below the parent node
+        float offset = childrenWidth / 2.0f - nodeWidth(current) / 2.0f;
+        for (Node* child : current->children()) {
+            child->mod() -= offset;
+        }
 
         // Parents lastLeft and lastRight are same as their left and right children
         current->addRightLast(current->children().back()->rightLast());
@@ -118,6 +122,30 @@ void BinaryTree::placeNodesRecursive(
     }
 }
 
+float BinaryTree::findSmallestMod(Node* current, float mod /*= 0.0f*/)
+{
+    // Record the offset of this subtree
+    mod += current->mod();
+
+    float leftThreadMod;
+    Node* leftContour = current->leftContour(&leftThreadMod);
+    mod += leftThreadMod;
+
+    if (leftContour) {
+
+        // If has left contour, recursively check its smallest mod
+        float childSmallestMod = findSmallestMod(leftContour, mod);
+
+        // Return either left contour mod or this mod
+        // depending on which one is smaller
+        return mod < childSmallestMod ? mod : childSmallestMod;
+
+    } else {
+        // No left contour, just return this mod
+        return mod;
+    }
+}
+
 void BinaryTree::applyModRecursive(Node* current, float mod /*= 0.0f*/)
 {
     // Record the offset of this subtree
@@ -125,7 +153,11 @@ void BinaryTree::applyModRecursive(Node* current, float mod /*= 0.0f*/)
 
     // Convert mod into location
     current->x() += mod;
-    current->mod() = 0;
+    current->mod() = 0.0f;
+
+    // At this point we shouldn't have any negative coordinates,
+    // but floating points are sometimes nasty
+    if (current->x() < 0.0f) current->x() = 0.0f;
 
     // Find tree width
     float rightEdge = current->x() + nodeWidth(current);
@@ -141,9 +173,17 @@ void BinaryTree::applyModRecursive(Node* current, float mod /*= 0.0f*/)
 
 BinaryTree::BinaryTree(json j)
 {
-    buildNodesRecursive(root_, j);  // Build tree
-    placeNodesRecursive(root_);     // Calculate tree locations
-    applyModRecursive(root_);       // Apply calculated locations
+    // Build tree
+    buildNodesRecursive(root_, j);
+
+    // Calculate tree locations
+    placeNodesRecursive(root_);
+
+    // Find the smallest (usually negative) mod value
+    float smallestMod = findSmallestMod(root_);
+
+    // Apply calculated locations
+    applyModRecursive(root_, -smallestMod);
 }
 
 BinaryTree::~BinaryTree()

@@ -28,6 +28,8 @@ private:
             const std::vector<Node*>& siblings = std::vector<Node*>()
     );
 
+    float findSmallestMod(Node* current, float mod = 0.0f);
+
     void applyModRecursive(Node* current, float mod = 0.0f);
 };
 
