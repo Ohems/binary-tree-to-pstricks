@@ -10,4 +10,4 @@ Libraries used:
 
 BTPST has been designed and tested with binary trees in mind, but also features untested support for N-trees. This is because the underlying system doesn't really care about the node child counts and all algorithms used in the project should work with N-trees as well.
 
-BTPST has been developed an exercise for a course at the Technical University of Tampere and the developers offer no support or functioning guarantees for the code. Use at your own risk.
+BTPST has been developed as an exercise for a course at the Technical University of Tampere and the developers offer no support or functioning guarantees for the code. Use at your own risk.
