@@ -10,7 +10,7 @@
 class Node
 {
 public:
-    Node() {}
+    Node();
 
     void content(std::string& content) { this->content_ = content; }
     const std::string& content() const { return content_; }
@@ -34,7 +34,15 @@ public:
     Node* leftContour();
     Node* rightContour();
 
-//private:
+    Node* rightLast();
+    Node* leftLast();
+
+    void addRightLast(Node* node);
+    void addLeftLast(Node* node);
+
+
+
+private:
     std::string content_;
 
     float x_ = 0.0f; /** X position of left edge in LaTeX units, check PSTricksExport for tools */
@@ -44,6 +52,8 @@ public:
     std::vector<Node*> children_;
 
     Node* thread_ = nullptr;
+    Node* rightLast_;
+    Node* leftLast_;
 };
 
 #endif // NODE_H

@@ -26,12 +26,15 @@ namespace {
         }       
     }
 
-    float findGreatestErrorInContour(Node* right, Node* left)
+    float findGreatestErrorInContour(Node* originalRight, Node* originalLeft)
     {
         float error = 0.0f;
 
         float rightMod = 0.0f;
         float leftMod = 0.0f;
+
+        Node* right = originalRight;
+        Node* left = originalLeft;
 
         while(right && left && right != left) {
             float diff = left->locX() + nodeWidth(left) + margin() - right->locX();
@@ -45,6 +48,13 @@ namespace {
 
             right = right->leftContour();
             left = left->rightContour();
+
+            if (!right && left) {
+                originalRight->rightLast()->thread(left);
+            }
+            if (!left && right) {
+                originalLeft->leftLast()->thread(right);
+            }
         }
 
         return error;
@@ -66,25 +76,10 @@ void BinaryTree::placeNodesRecursive(
         Node* lastChild = current->children().back();
         float childrenWidth = lastChild->locX() + nodeWidth(lastChild) - firstChild->locX();
         current->x() += firstChild->locX() + childrenWidth / 2.0f - nodeWidth(current) / 2.0f;
-    } else {
-        // This is the last child, find threads for it
-        if (current == siblings.front()) {
-            // Find thread to right
-            for (size_t i = 1 ; i < siblings.size() ; ++i) {
-                if (!siblings[i]->children().empty()) {
-                    current->thread(siblings[i]->children().front());
-                    break;
-                }
-            }
-        } else if (current == siblings.back()) {
-            // Find thread to left
-            for (size_t i = 1 ; i < siblings.size() ; ++i) {
-                if (!siblings[i]->children().empty()) {
-                    current->thread(siblings[siblings.size() - i - 1]->children().back());
-                    break;
-                }
-            }
-        }
+
+        // Parents lastLeft and lastRight are same as their left and right children
+        current->addRightLast(current->children().back());
+        current->addLeftLast(current->children().front());
     }
 
     // Apply mod based on contour
