@@ -29,18 +29,17 @@ public:
     unsigned int depth() const { return depth_; }
 
     Node* thread() { return thread_; }
-    void thread(Node* thread) { thread_ = thread; }
+    void thread(Node* thread, float mod);
+    float threadMod() { return threadMod_; }
 
-    Node* leftContour();
-    Node* rightContour();
+    Node* leftContour(float* threadMod = 0);
+    Node* rightContour(float* threadMod = 0);
 
     Node* rightLast();
     Node* leftLast();
 
     void addRightLast(Node* node);
     void addLeftLast(Node* node);
-
-
 
 private:
     std::string content_;
@@ -52,6 +51,8 @@ private:
     std::vector<Node*> children_;
 
     Node* thread_ = nullptr;
+    float threadMod_ = 0.0f;
+
     Node* rightLast_;
     Node* leftLast_;
 };

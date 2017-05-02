@@ -6,6 +6,12 @@ Node::Node()
     leftLast_ = this;
 }
 
+void Node::thread(Node* thread, float mod)
+{
+    thread_ = thread;
+    threadMod_ = mod;
+}
+
 
 void Node::addChild(Node* node)
 {
@@ -15,14 +21,24 @@ void Node::addChild(Node* node)
 }
 
 
-Node* Node::leftContour()
+Node* Node::leftContour(float* threadMod /*= 0*/)
 {
-    return children_.empty() ? thread_ : children_.front();
+    if (threadMod) *threadMod = 0.0f;
+    if (children_.size() == 0) {
+        if (threadMod && thread_) *threadMod = threadMod_;
+        return thread_;
+    }
+    return children_.front();
 }
 
-Node* Node::rightContour()
+Node* Node::rightContour(float* threadMod /*= 0*/)
 {
-    return children_.empty() ? thread_ : children_.back();
+    if (threadMod) *threadMod = 0.0f;
+    if (children_.size() == 0) {
+        if (threadMod && thread_) *threadMod = threadMod_;
+        return thread_;
+    }
+    return children_.back();
 }
 
 Node* Node::rightLast()

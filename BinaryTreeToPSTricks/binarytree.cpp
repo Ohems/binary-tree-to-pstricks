@@ -46,14 +46,24 @@ namespace {
             rightMod += right->mod();
             leftMod += left->mod();
 
-            right = right->leftContour();
-            left = left->rightContour();
+            float leftThreadMod;
+            float rightThreadMod;
+
+            right = right->leftContour(&rightThreadMod);
+            left = left->rightContour(&leftThreadMod);
+
+            leftMod -= leftThreadMod;
+            rightMod += rightThreadMod;
 
             if (!right && left) {
-                originalRight->rightLast()->thread(left);
+                Node* rightLast = originalRight->rightLast();
+                diff = left->locX() + nodeWidth(left) + margin() - rightLast->locX();
+                originalRight->rightLast()->thread(left, diff);
             }
             if (!left && right) {
-                originalLeft->leftLast()->thread(right);
+                Node* leftLast = originalLeft->leftLast();
+                diff = right->locX() + nodeWidth(right) + margin() - leftLast->locX();
+                originalLeft->leftLast()->thread(right, diff);
             }
         }
 
