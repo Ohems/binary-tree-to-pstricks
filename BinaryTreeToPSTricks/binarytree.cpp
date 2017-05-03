@@ -50,19 +50,31 @@ namespace {
                 error = overlay;
             }
 
-            float rightThreadMod;
-            float leftThreadMod;
+            float rightThreadMod = 0.0f;
+            float leftThreadMod = 0.0f;
 
             // Progress to the next nodes
             // If we jump over a thread, record the mod offset
-            right = right->leftContour(&rightThreadMod);
             left = left->rightContour(&leftThreadMod);
+
+            /*
+             * With the right node we have to be a bit more cautious.
+             * In trees with N children, it's possible that we may accidentally
+             * use a previously created thread to jump to the next left node.
+             * These cases should be treated as if the thread never existed so that
+             * the thread gets recreated and the mod value attached to the it gets updated.
+             */
+            if (!left || right->thread() != left) {
+                right = right->leftContour(&rightThreadMod);
+            } else {
+                right = nullptr;
+            }
 
             // Apply thread mod offset to the known mods
             rightMod += rightThreadMod;
             leftMod += leftThreadMod;
 
-            // Check right tree ended but the left one is still going
+            // Check if the right tree ended but the left one is still going
             if (!right && left) {
                 // Create a new thread from right to left
                 originalRight->rightLast()->thread(
@@ -71,7 +83,7 @@ namespace {
                 );
             }
 
-            // Check left tree ended but the right one is still going
+            // Check if the left tree ended but the right one is still going
             if (!left && right) {
                 // Create a new thread from left to right
                 originalLeft->leftLast()->thread(
