@@ -1,4 +1,5 @@
 #include <string>
+#include <cmath>
 
 #include "binarytree.h"
 #include "json.hpp"
@@ -155,9 +156,8 @@ void BinaryTree::applyModRecursive(Node* current, float mod /*= 0.0f*/)
     current->x() += mod;
     current->mod() = 0.0f;
 
-    // At this point we shouldn't have any negative coordinates,
-    // but floating points are sometimes nasty
-    if (current->x() < 0.0f) current->x() = 0.0f;
+    // Round float number to two decimal precision, rounding up
+    current->x() = ceil(current->x() * 100.0f) / 100.0f;
 
     // Find tree width
     float rightEdge = current->x() + nodeWidth(current);
