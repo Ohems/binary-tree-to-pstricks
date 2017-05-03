@@ -145,12 +145,11 @@ float BinaryTree::findSmallestMod(Node* current, float mod /*= 0.0f*/)
 
     float leftThreadMod;
     Node* leftContour = current->leftContour(&leftThreadMod);
-    mod += leftThreadMod;
 
     if (leftContour) {
 
         // If has left contour, recursively check its smallest mod
-        float childSmallestMod = findSmallestMod(leftContour, mod);
+        float childSmallestMod = findSmallestMod(leftContour, mod + leftThreadMod);
 
         // Return either left contour mod or this mod
         // depending on which one is smaller
