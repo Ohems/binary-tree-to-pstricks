@@ -98,12 +98,15 @@ void BinaryTree::placeNodesRecursive(
         // Check children total width
         Node* firstChild = current->children().front();
         Node* lastChild = current->children().back();
-        float childrenWidth = lastChild->locX() + nodeWidth(lastChild) - firstChild->locX();
+        float childrenWidth = lastChild->locX() + nodeWidth(lastChild) / 2.0f
+                - (firstChild->locX() + nodeWidth(firstChild) / 2.0f);
+        float childrenCenter = firstChild->locX() + nodeWidth(firstChild) / 2.0f + childrenWidth / 2.0f;
+        float currentCenter = nodeWidth(current) / 2.0f;
 
         // Center children below the parent node
-        float offset = childrenWidth / 2.0f - nodeWidth(current) / 2.0f;
+        float offset = currentCenter - childrenCenter;
         for (Node* child : current->children()) {
-            child->mod() -= offset;
+            child->mod() += offset;
         }
 
         // Parents lastLeft and lastRight are same as their left and right children
