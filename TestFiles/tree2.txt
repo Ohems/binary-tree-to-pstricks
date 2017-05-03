@@ -1,0 +1,51 @@
+{
+  "content": "root",
+  "children": [
+    {
+	  "content": "1",
+	  "children": [
+		{
+		  "content": "2",
+		  "children": [
+			{
+			  "content": "3"
+			},
+			{
+			  "content": "4 with text"
+			},
+			{
+			  "content": "5"
+			}
+		  ]
+		},
+		{
+		  "content": "6 with text"
+		},
+		{
+		  "content": "7"
+		}
+	  ]
+	},
+	{
+	  "content": "8",
+	  "children": [
+		{
+		  "content": "9",
+		  "children": [
+			{
+			  "content": "10",
+			  "children": [
+				{
+				  "content": "11"
+				},
+				{
+				  "content": "12 with some more text"
+				}
+			  ]
+			}
+		  ]
+		}
+	  ]
+	}
+  ]
+}
