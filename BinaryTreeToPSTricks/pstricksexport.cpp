@@ -203,7 +203,7 @@ namespace PSTricksExport
 
     float nodeWidth(Node* node)
     {
-        return 0.5f + 0.2f * static_cast<float>(node->content().length());
+        return 0.5f + 0.17f * static_cast<float>(node->content().length());
     }
 
     float nodeY(const BinaryTree& tree, Node* node)
