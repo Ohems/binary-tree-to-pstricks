@@ -14,7 +14,7 @@ using json = nlohmann::json;
 int main(int argc, char* argv[])
 {
     if (argc < 2){
-        cerr << "Usage: " << argv[0] << "-i input [-o output] [-n] [-w]" << endl
+        cerr << "Usage: " << argv[0] << " -i input [-o output] [-n] [-w] [-t]" << endl
              << left << endl
              << setw(21) << "\t-i input:"   << "Input file" << endl
              << setw(21) << "\t-o output:"  << "Output file, write to console if not defined" << endl
