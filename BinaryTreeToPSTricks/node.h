@@ -38,8 +38,8 @@ public:
     Node* rightLast();
     Node* leftLast();
 
-    void addRightLast(Node* node);
-    void addLeftLast(Node* node);
+    void rightLast(Node* node);
+    void leftLast(Node* node);
 
 private:
     std::string content_;

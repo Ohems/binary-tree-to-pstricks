@@ -27,8 +27,10 @@ namespace {
         }       
     }
 
-    float findGreatestErrorInContour(Node* originalRight, Node* originalLeft)
-    {
+    float findGreatestErrorInContour(
+            Node* originalRight,
+            Node* originalLeft
+    ) {
         float error = 0.0f;
 
         float rightMod = 0.0f;
@@ -56,19 +58,7 @@ namespace {
             // Progress to the next nodes
             // If we jump over a thread, record the mod offset
             left = left->rightContour(&leftThreadMod);
-
-            /*
-             * With the right node we have to be a bit more cautious.
-             * In trees with N children, it's possible that we may accidentally
-             * use a previously created thread to jump to the next left node.
-             * These cases should be treated as if the thread never existed so that
-             * the thread gets recreated and the mod value attached to the it gets updated.
-             */
-            if (!left || right->thread() != left) {
-                right = right->leftContour(&rightThreadMod);
-            } else {
-                right = nullptr;
-            }
+            right = right->leftContour(&rightThreadMod);
 
             // Apply thread mod offset to the known mods
             rightMod += rightThreadMod;
@@ -81,6 +71,10 @@ namespace {
                             left,
                             leftMod - (rightMod + error)
                 );
+
+                // Merge tree bounds
+                originalRight->rightLast(originalLeft->rightLast());
+                originalRight->leftLast(originalLeft->leftLast());
             }
 
             // Check if the left tree ended but the right one is still going
@@ -90,6 +84,17 @@ namespace {
                             right,
                             (rightMod + error) - leftMod
                 );
+
+                // Merge tree bounds
+                originalLeft->rightLast(originalRight->leftLast());
+                originalLeft->leftLast(originalRight->leftLast());
+            }
+
+            // Check if both trees ended
+            if (!left && !right) {
+                // Merge tree bounds
+                originalRight->leftLast(originalLeft->leftLast());
+                originalLeft->rightLast(originalRight->rightLast());
             }
         }
 
@@ -101,15 +106,16 @@ void BinaryTree::placeNodesRecursive(
         Node* current,
         const vector<Node*>& siblings /*= vector<Node*>()*/
 ) {
-    if (!current->children().empty()) {
+    vector<Node*>& children = current->children();
+    if (!children.empty()) {
         // Process children first
-        for (Node* child : current->children()) {
-            placeNodesRecursive(child, current->children());
+        for (Node* child : children) {
+            placeNodesRecursive(child, children);
         }
 
         // Check children total width
-        Node* firstChild = current->children().front();
-        Node* lastChild = current->children().back();
+        Node* firstChild = children.front();
+        Node* lastChild = children.back();
         float childrenWidth = lastChild->locX() + nodeWidth(lastChild) / 2.0f
                 - (firstChild->locX() + nodeWidth(firstChild) / 2.0f);
         float childrenCenter = firstChild->locX() + nodeWidth(firstChild) / 2.0f + childrenWidth / 2.0f;
@@ -117,19 +123,27 @@ void BinaryTree::placeNodesRecursive(
 
         // Center children below the parent node
         float offset = currentCenter - childrenCenter;
-        for (Node* child : current->children()) {
+        for (Node* child : children) {
             child->mod() += offset;
         }
 
         // Parents lastLeft and lastRight are same as their left and right children
-        current->addRightLast(current->children().back()->rightLast());
-        current->addLeftLast(current->children().front()->leftLast());
+        current->rightLast(children.back()->rightLast());
+        current->leftLast(children.front()->leftLast());
     }
 
     // Apply mod based on contour
-    for (Node* sibling : siblings) {
-        if (sibling == current) break;
-        current->mod() += findGreatestErrorInContour(current, sibling);
+    if (siblings.size() > 0) {
+        // Find the sibling node that comes right before this one
+        auto iter = siblings.rbegin();
+        while (*iter != current) ++iter;
+        ++iter;
+
+        // Check if sibling exists and calculate mod
+        if (iter != siblings.rend()) {
+            Node* sibling = *iter;
+            current->mod() += findGreatestErrorInContour(current, sibling);
+        }
     }
 
     // Keep track of the layer count

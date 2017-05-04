@@ -51,12 +51,12 @@ Node* Node::leftLast()
     return leftLast_;
 }
 
-void Node::addRightLast(Node* node)
+void Node::rightLast(Node* node)
 {
     rightLast_ = node;
 }
 
-void Node::addLeftLast(Node* node)
+void Node::leftLast(Node* node)
 {
     leftLast_ = node;
 }
