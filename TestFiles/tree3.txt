@@ -1,0 +1,76 @@
+{
+  "content": "Top of the tree",
+  "children": [
+    {
+	  "content": "1",
+	  "children": [
+		{
+		  "content": "2",
+		  "children": [
+			{
+			  "content": "3"
+			},
+			{
+			  "content": "4 with text"
+			},
+			{
+			  "content": "5"
+			}
+		  ]
+		},
+		{
+		  "content": "6 with text"
+		},
+		{
+		  "content": "7",
+	 	 "children": [
+				{
+			  "content": "8",
+			 "children": [
+					{
+			  		"content": "9",
+					"children": [
+					{
+				  	"content": "10 with text"
+					},
+					{
+				  	"content": "11"
+					}
+			  	  ]
+				}
+		  	  ]
+			}
+	  	  ]
+		}
+	  ]
+	},
+	{
+	  "content": "12",
+	  "children": [
+		{
+		  "content": "13",
+		  "children": [
+			{
+			  "content": "14",
+			  "children": [
+				{
+				  "content": "15"
+				},
+				{
+				  "content": "16 with some more text"
+				}
+			  ]
+			}
+		  ]
+		}
+	  ]
+	},
+	{
+	  "content": "17"
+	},
+	{
+	  "content": "18"
+	}
+
+  ]
+}
