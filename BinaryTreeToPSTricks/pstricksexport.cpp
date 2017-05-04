@@ -212,7 +212,13 @@ namespace PSTricksExport
             addNode(tree, nodeStream, node);
 
             if (node->thread() && showThreads_) {
-                addConnection(tree, connectionStream, node, node->thread(), true);
+                addConnection(
+                            tree,
+                            connectionStream,
+                            node,
+                            node->thread().target,
+                            true
+                );
             }
 
             for (Node* child : node->children()) {

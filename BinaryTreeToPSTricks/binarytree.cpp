@@ -66,10 +66,11 @@ namespace {
             // Check if the right tree ended but the left one is still going
             if (!right && left) {
                 // Create a new thread from right to left
-                originalRight->rightLast()->thread(
+                Connection rightLast = originalRight->rightLast();
+                rightLast.target->thread({
                             left,
-                            leftMod - (rightMod + error)
-                );
+                            leftMod - (rightLast.mod + error)
+                });
 
                 // Merge tree bounds
                 originalRight->rightLast(originalLeft->rightLast());
@@ -79,10 +80,11 @@ namespace {
             // Check if the left tree ended but the right one is still going
             if (!left && right) {
                 // Create a new thread from left to right
-                originalLeft->leftLast()->thread(
+                Connection leftLast = originalLeft->leftLast();
+                originalLeft->leftLast().target->thread({
                             right,
-                            (rightMod + error) - leftMod
-                );
+                            (rightMod + error) - leftLast.mod
+                });
 
                 // Merge tree bounds
                 originalLeft->rightLast(originalRight->leftLast());
@@ -126,9 +128,18 @@ void BinaryTree::placeNodesRecursive(
             child->mod() += offset;
         }
 
-        // Parents lastLeft and lastRight are same as their left and right children
-        current->rightLast(children.back()->rightLast());
-        current->leftLast(children.front()->leftLast());
+        // Parents lastLeft and lastRight connections are same as their
+        // left and right childrens' but with altered mod values
+        current->rightLast(
+                    children.back()->rightLast().copy(
+                        children.back()->mod()
+                    )
+        );
+        current->leftLast(
+                    children.front()->leftLast().copy(
+                        children.front()->mod()
+                    )
+        );
     }
 
     // Apply mod based on contour

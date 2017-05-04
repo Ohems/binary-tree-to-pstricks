@@ -31,7 +31,7 @@
                   "content": "9",
                   "children": [
                     {
-                      "content": "10 with text"
+                      "content": "10 with a lot more text"
                     },
                     {
                       "content": "11"

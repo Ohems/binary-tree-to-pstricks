@@ -1,17 +1,22 @@
 #include "node.h"
 
-Node::Node()
+Connection Connection::copy(float modDiff /*= 0.0f*/) const
 {
-    rightLast_ = this;
-    leftLast_ = this;
+    Connection thread = *this;
+    thread.mod += modDiff;
+    return thread;
 }
 
-void Node::thread(Node* thread, float mod)
+Node::Node() : thread_({nullptr, 0.0f})
+{
+    rightLast_ = { this, 0.0f };
+    leftLast_ = { this, 0.0f };
+}
+
+void Node::thread(const Connection& thread)
 {
     thread_ = thread;
-    threadMod_ = mod;
 }
-
 
 void Node::addChild(Node* node)
 {
@@ -20,13 +25,12 @@ void Node::addChild(Node* node)
     children_.push_back(node);
 }
 
-
 Node* Node::leftContour(float* threadMod /*= 0*/)
 {
     if (threadMod) *threadMod = 0.0f;
     if (children_.size() == 0) {
-        if (threadMod && thread_) *threadMod = threadMod_;
-        return thread_;
+        if (threadMod && thread_) *threadMod = thread_.mod;
+        return thread_.target;
     }
     return children_.front();
 }
@@ -35,28 +39,21 @@ Node* Node::rightContour(float* threadMod /*= 0*/)
 {
     if (threadMod) *threadMod = 0.0f;
     if (children_.size() == 0) {
-        if (threadMod && thread_) *threadMod = threadMod_;
-        return thread_;
+        if (threadMod && thread_) *threadMod = thread_.mod;
+        return thread_.target;
     }
     return children_.back();
 }
 
-Node* Node::rightLast()
+Connection Node::rightLast() { return rightLast_; }
+Connection Node::leftLast() { return leftLast_; }
+
+void Node::rightLast(const Connection& thread)
 {
-    return rightLast_;
+    rightLast_ = thread;
 }
 
-Node* Node::leftLast()
+void Node::leftLast(const Connection& thread)
 {
-    return leftLast_;
-}
-
-void Node::rightLast(Node* node)
-{
-    rightLast_ = node;
-}
-
-void Node::leftLast(Node* node)
-{
-    leftLast_ = node;
+    leftLast_ = thread;
 }

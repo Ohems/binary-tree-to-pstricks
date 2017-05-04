@@ -4,6 +4,17 @@
 #include <string>
 #include <vector>
 
+class Node;
+
+struct Connection {
+    Node* target;
+    float mod;
+
+    operator bool() const { return target != nullptr; }
+
+    Connection copy(float modDiff = 0.0f) const;
+};
+
 /**
  * @brief Class representing one node in the tree
  */
@@ -28,18 +39,17 @@ public:
 
     unsigned int depth() const { return depth_; }
 
-    Node* thread() { return thread_; }
-    void thread(Node* thread, float mod);
-    float threadMod() { return threadMod_; }
+    Connection thread() { return thread_; }
+    void thread(const Connection& thread);
 
     Node* leftContour(float* threadMod = 0);
     Node* rightContour(float* threadMod = 0);
 
-    Node* rightLast();
-    Node* leftLast();
+    Connection rightLast();
+    Connection leftLast();
 
-    void rightLast(Node* node);
-    void leftLast(Node* node);
+    void rightLast(const Connection& thread);
+    void leftLast(const Connection& thread);
 
 private:
     std::string content_;
@@ -50,11 +60,9 @@ private:
 
     std::vector<Node*> children_;
 
-    Node* thread_ = nullptr;
-    float threadMod_ = 0.0f;
-
-    Node* rightLast_;
-    Node* leftLast_;
+    Connection thread_;
+    Connection rightLast_;
+    Connection leftLast_;
 };
 
 #endif // NODE_H
