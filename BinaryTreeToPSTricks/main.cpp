@@ -17,10 +17,10 @@ int main(int argc, char* argv[])
         cerr << "Usage: " << argv[0] << " -i input [-o output] [-n] [-w] [-t]" << endl
              << left << endl
              << setw(21) << "\t-i input:"   << "Input file" << endl
-             << setw(21) << "\t-o output:"  << "Output file, write to console if not defined" << endl
+             << setw(21) << "\t-o output:"  << "Output file, will output to console if not defined" << endl
              << setw(21) << "\t-n:"         << "Indent PSTricks output according to tree depth" << endl
-             << setw(21) << "\t-w:"         << "Wrap document with a minimal LaTeX document" << endl
-             << setw(21) << "\t-t:"         << "Show threads (for debugging purposes)" << endl;
+             << setw(21) << "\t-w:"         << "Wrap with a minimal LaTeX document" << endl
+             << setw(21) << "\t-t:"         << "Output threads (for debugging purposes)" << endl;
         return 0;
     }
 
