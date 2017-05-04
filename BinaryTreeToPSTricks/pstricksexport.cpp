@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <string>
 #include <sstream>
+#include <cmath>
 
 #include "pstricksexport.h"
 #include "binarytree.h"
@@ -23,14 +24,22 @@ namespace PSTricksExport
 
         string targetFile_ = "";
 
-        float treeHeight(const BinaryTree& tree) {
+        float treeHeight(const BinaryTree& tree)
+        {
             float layerCount = static_cast<float>(tree.layers());
             float marginsY = layerCount > 0 ? margin() * (layerCount - 1.0f) : 0.0f;
 
             return NODE_HEIGHT * layerCount + marginsY;
         }
 
-        string escapeContent(const string& input) {
+        float roundNumber(float number)
+        {
+            // Round float number to three decimal precision, rounding up
+            return ceil(number * 1000.0f) / 1000.0f;
+        }
+
+        string escapeContent(const string& input)
+        {
             /*
              * BEFORE YOU EDIT:
              * The code below assumes that all characters to be escaped
@@ -108,6 +117,9 @@ namespace PSTricksExport
             float width = tree.width();
             float height = treeHeight(tree);
 
+            width = roundNumber(width);
+            height = roundNumber(height);
+
             ss << "\\newcommand{\\treenode}[5]{\n"
                    << "\t\\rput(#1,#2){\n"
                        << "\t\t\\psframe[fillstyle=solid,fillcolor=white,framearc=1](0,0)(#3," << NODE_HEIGHT << ")\n"
@@ -140,6 +152,11 @@ namespace PSTricksExport
             float width = nodeWidth(node);
             float textX = width / 2.0f;
 
+            cornerX = roundNumber(cornerX);
+            cornerY = roundNumber(cornerY);
+            width = roundNumber(width);
+            textX = roundNumber(textX);
+
             string content = node->content();
             if (escapeSpecialCharacters_) content = escapeContent(content);
 
@@ -168,6 +185,11 @@ namespace PSTricksExport
 
             float x2 = b->x() + nodeWidth(b) / 2.0f;
             float y2 = nodeY(tree, b) + NODE_HEIGHT / 2.0f;
+
+            x1 = roundNumber(x1);
+            y1 = roundNumber(y1);
+            x2 = roundNumber(x2);
+            y2 = roundNumber(y2);
 
             if (indent_) addIndent(ss, b);
 
