@@ -181,18 +181,22 @@ namespace PSTricksExport
                << ")(" << x2 << "," << y2 << ")\n";
         }
 
-        void addNodesRecursive(const BinaryTree& tree, stringstream& ss, Node* node)
-        {
+        void addNodesRecursive(
+                const BinaryTree& tree,
+                stringstream& nodeStream,
+                stringstream& connectionStream,
+                Node* node
+        ) {
+            addNode(tree, nodeStream, node);
+
             if (node->thread() && showThreads_) {
-                addConnection(tree, ss, node, node->thread(), true);
+                addConnection(tree, connectionStream, node, node->thread(), true);
             }
 
             for (Node* child : node->children()) {
-                addConnection(tree, ss, node, child);
-                addNodesRecursive(tree, ss, child);
+                addConnection(tree, connectionStream, node, child);
+                addNodesRecursive(tree, nodeStream, connectionStream, child);
             }
-
-            addNode(tree, ss, node);
         }
     }
 
@@ -255,8 +259,15 @@ namespace PSTricksExport
 
         addHeader(tree, ss);
 
-        if (tree.root()) {
-            addNodesRecursive(tree, ss, tree.root());
+        {
+            stringstream nodeStream;
+            stringstream connectionStream;
+
+            if (tree.root()) {
+                addNodesRecursive(tree, nodeStream, connectionStream, tree.root());
+            }
+
+            ss << connectionStream.str() << nodeStream.str();
         }
 
         addFooter(ss);
